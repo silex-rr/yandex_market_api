@@ -1,10 +1,10 @@
-package com.github.silexrr.yandex_market_api.repository;
+package com.github.silexrr.yandex_market_api.auth.repository;
 
-import com.github.silexrr.yandex_market_api.model.User;
+import com.github.silexrr.yandex_market_api.auth.model.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.UUID;
 
 public interface userRepository extends MongoRepository<User, String> {
-    User findById(UUID id);
+    public User findById(UUID id);
 }
