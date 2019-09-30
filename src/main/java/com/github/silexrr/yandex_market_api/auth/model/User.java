@@ -1,51 +1,106 @@
 package com.github.silexrr.yandex_market_api.auth.model;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.util.Set;
 import java.util.UUID;
+import javax.persistence.*;
 
+@Entity
+@Document(collection = "user")
 public class User {
 
     @Id
-    private final UUID id;
-    private final String name;
-    private final String login;
-    private final String passwordHash;
+    private String _id;
+    private String login;
+    private String password;
+    @Transient
+    private String passwordConfirm;
+    private String name;
+    private boolean active;
 
-    public User(UUID id, String name, String login, String passwordHash) {
-        this.id = id;
+    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
+    @ManyToMany
+    private Set<Role> roles;
+
+    public User() {
+
+    }
+
+    public User(String _id, String login, String name, String password) {
+        this._id = _id;
         this.name = name;
         this.login = login;
-        this.passwordHash = passwordHash;
+        this.password = password;
     }
 
     public User(String login, String name) {
-        this(UUID.randomUUID(), name,  login, "");
-    }
-
-    public UUID getId() {
-        return id;
+        this(UUID.randomUUID().toString(), login, name,"");
     }
 
     public String getName() {
         return name;
     }
 
+    public String get_id() {
+        return _id;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
+    public String getPasswordConfirm() {
+        return passwordConfirm;
+    }
+
+    public void setPasswordConfirm(String passwordConfirm) {
+        this.passwordConfirm = passwordConfirm;
+    }
+
     public String getLogin() {
         return login;
     }
 
-    public String getPasswordHash() {
-        return passwordHash;
+    public String getPassword() {
+        return password;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
+                "_id='" + _id + '\'' +
                 ", login='" + login + '\'' +
-                ", passwordHash='" + passwordHash + '\'' +
+//                ", password='" + password + '\'' +
                 ", name='" + name + '\'' +
+                ", active=" + active +
+                ", roles=" + roles +
                 '}';
     }
 }

@@ -5,6 +5,10 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.UUID;
 
-public interface userRepository extends MongoRepository<User, String> {
+public interface UserRepository extends MongoRepository<User, String> {
     public User findById(UUID id);
+
+    public User findByName(String name);
+
+    public User findByLogin(String login);
 }
