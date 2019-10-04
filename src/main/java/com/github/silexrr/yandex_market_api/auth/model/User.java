@@ -2,7 +2,6 @@ package com.github.silexrr.yandex_market_api.auth.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Set;
 import java.util.UUID;
@@ -13,7 +12,7 @@ import javax.persistence.*;
 public class User {
 
     @Id
-    private String _id;
+    private String id;
     private String login;
     private String password;
     @Transient
@@ -29,8 +28,8 @@ public class User {
 
     }
 
-    public User(String _id, String login, String name, String password) {
-        this._id = _id;
+    public User(String id, String login, String name, String password) {
+        this.id = id;
         this.name = name;
         this.login = login;
         this.password = password;
@@ -44,8 +43,8 @@ public class User {
         return name;
     }
 
-    public String get_id() {
-        return _id;
+    public String getId() {
+        return id;
     }
 
     public void setLogin(String login) {
@@ -95,7 +94,7 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "_id='" + _id + '\'' +
+                "_id='" + id + '\'' +
                 ", login='" + login + '\'' +
 //                ", password='" + password + '\'' +
                 ", name='" + name + '\'' +

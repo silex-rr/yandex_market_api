@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.util.HashMap;
+
 @Controller
 public class UserController {
     @Autowired
@@ -26,14 +28,14 @@ public class UserController {
     @GetMapping("/registration")
     public String registration(Model model) {
         model.addAttribute("userForm", new User());
-
         return "registration";
     }
 
     @PostMapping("/registration")
     public String registration(@ModelAttribute("userForm") User userForm, BindingResult bindingResult) {
         userValidator.validate(userForm, bindingResult);
-
+        System.out.println(userForm);
+        System.out.println(bindingResult);
         if (bindingResult.hasErrors()) {
             return "registration";
         }
@@ -56,8 +58,8 @@ public class UserController {
         return "login";
     }
 
-    @GetMapping({"/", "/welcome"})
-    public String welcome(Model model) {
-        return "welcome";
-    }
+//    @GetMapping({"/", "/welcome"})
+//    public String welcome(Model model) {
+//        return "";
+//    }
 }

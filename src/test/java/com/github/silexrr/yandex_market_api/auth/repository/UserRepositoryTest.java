@@ -22,14 +22,14 @@ public class UserRepositoryTest {
         User user1 = new User("a-test", "Alice");
         User user2 = new User("b-test", "Boris");
 
-        assertNotNull(user1.get_id());
-        assertNotNull(user2.get_id());
+        assertNotNull(user1.getId());
+        assertNotNull(user2.getId());
 
         this.userRepository.save(user1);
         this.userRepository.save(user2);
 
-        assertNotNull(user1.get_id());
-        assertNotNull(user2.get_id());
+        assertNotNull(user1.getId());
+        assertNotNull(user2.getId());
     }
 
     @Test
@@ -52,6 +52,8 @@ public class UserRepositoryTest {
     @Test
     public void testUpdateData() {
         User userB = userRepository.findByLogin("b-test");
+        System.out.println(userB.getId());
+        System.out.println(userB);
         assertNotNull(userB);
         assertEquals("Boris", userB.getName());
 
