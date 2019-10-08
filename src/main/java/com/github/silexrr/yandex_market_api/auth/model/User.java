@@ -25,7 +25,8 @@ public class User {
     private Set<Role> roles;
 
     public User() {
-
+        this.login = "";
+        this.name = "";
     }
 
     public User(String id, String login, String name, String password) {

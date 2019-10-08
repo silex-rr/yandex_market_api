@@ -11,10 +11,11 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.HashMap;
 
 @Controller
+@RequestMapping(value = "/auth")
 public class UserController {
     @Autowired
     private UserService userService;
@@ -28,23 +29,31 @@ public class UserController {
     @GetMapping("/registration")
     public String registration(Model model) {
         model.addAttribute("userForm", new User());
-        return "registration";
+//        System.out.println("userForm");
+//        System.out.println("bindingResult");
+        return "auth/registration";
     }
 
     @PostMapping("/registration")
-    public String registration(@ModelAttribute("userForm") User userForm, BindingResult bindingResult) {
+    public String registration(@ModelAttribute("userForm") User userForm,
+                               BindingResult bindingResult
+    ) {
         userValidator.validate(userForm, bindingResult);
+//        bindingResult.errorM
         System.out.println(userForm);
         System.out.println(bindingResult);
+//        bindingResult
+//        model.addAttribute("userForm", userForm);
+//        model.addAttribute("bindingResult", bindingResult);
         if (bindingResult.hasErrors()) {
-            return "registration";
+            return "auth/registration";
         }
 
         userService.save(userForm);
 
         securityService.autoLogin(userForm.getLogin(), userForm.getPasswordConfirm());
 
-        return "redirect:/welcome";
+        return "redirect:/";
     }
 
     @GetMapping("/login")
@@ -55,7 +64,7 @@ public class UserController {
         if (logout != null)
             model.addAttribute("message", "You have been logged out successfully.");
 
-        return "login";
+        return "auth/login";
     }
 
 //    @GetMapping({"/", "/welcome"})
