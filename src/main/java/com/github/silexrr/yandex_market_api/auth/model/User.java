@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.Set;
 import java.util.UUID;
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 
 @Entity
 @Document(collection = "user")
@@ -14,6 +15,8 @@ public class User {
     @Id
     private String id;
     private String login;
+    @Email(message = "Email should be valid")
+    private String email;
     private String password;
     @Transient
     private String passwordConfirm;
@@ -27,6 +30,7 @@ public class User {
     public User() {
         this.login = "";
         this.name = "";
+        this.email = "";
     }
 
     public User(String id, String login, String name, String password) {
@@ -43,6 +47,7 @@ public class User {
     public String getName() {
         return name;
     }
+
 
     public String getId() {
         return id;
@@ -66,6 +71,10 @@ public class User {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public void savePrepare() {
+        passwordConfirm = "";
     }
 
     public String getPasswordConfirm() {
@@ -92,11 +101,20 @@ public class User {
         this.password = password;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     @Override
     public String toString() {
         return "User{" +
                 "_id='" + id + '\'' +
                 ", login='" + login + '\'' +
+                ", email='" + email + '\'' +
 //                ", password='" + password + '\'' +
                 ", name='" + name + '\'' +
                 ", active=" + active +

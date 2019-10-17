@@ -8,6 +8,11 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.ValidatorFactory;
+import java.util.Set;
+
 @Component
 public class UserValidator implements Validator {
     @Autowired
@@ -33,13 +38,22 @@ public class UserValidator implements Validator {
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "NotEmpty");
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "NotEmpty");
-        if (user.getPassword().length() < 6 || user.getPassword().length() > 32) {
+        if (user.getPassword().length() < 5 || user.getPassword().length() > 32) {
             errors.rejectValue("password", "Size.userForm.password");
         }
 
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "passwordConfirm", "NotEmpty");
         if (!user.getPasswordConfirm().equals(user.getPassword())) {
             errors.rejectValue("passwordConfirm", "Diff.userForm.passwordConfirm");
         }
+
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", "NotEmpty");
+//        ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
+//        javax.validation.Validator validator = validatorFactory.getValidator();
+//        Set<ConstraintViolation<User>> validate = validator.validate(user);
+//        for (ConstraintViolation<User> val : validate) {
+//            System.out.println(val.getMessage());
+//        }
     }
 
 }

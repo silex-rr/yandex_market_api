@@ -2,6 +2,6 @@
 <#import "parts/auth.ftl" as a>
 <@c.page>
     <div>
-        <@a.logout />
+       ${authUser.getName()} <@a.logout />
     </div>
 </@c.page>

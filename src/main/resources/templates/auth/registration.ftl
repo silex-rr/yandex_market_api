@@ -18,24 +18,66 @@
 <#--            <errors path="login"></errors>-->
 <#--        </div>-->
 
+
         <@spring.bind 'userForm.login'/>
-        Username: <input type="text" name="${spring.status.expression}" value="${spring.status.value?html}"/>
-        <#if spring.status.error>
-            <#list spring.status.errorMessages as error> <b>${error}</b> <br> </#list>
+        <div class="form-group<#if spring.status.error> has-error</#if>">
+            <input type="text" name="${spring.status.expression}" value="${spring.status.value?html}"
+                placeholder="Login"
+            />
+            <#if spring.status.error>
+                <ul>
+                    <#list spring.status.errorMessages as error> <li>${error}</li> </#list>
+                </ul>
+            </#if>
+        </div>
 
-            <br/>
-            <br/>
-            <br/>
+        <@spring.bind 'userForm.name'/>
+        <div class="form-group<#if spring.status.error> has-error</#if>">
+            <input type="text" name="${spring.status.expression}" value="${spring.status.value?html}"
+                   placeholder="Username"
+            />
+            <#if spring.status.error>
+                <ul>
+                    <#list spring.status.errorMessages as error> <li>${error}</li> </#list>
+                </ul>
+            </#if>
+        </div>
 
-<#--            <#list spring.status.errors?keys as prop>-->
-<#--                ${prop} = ${user.get(prop)}-->
-<#--            </#list>-->
-<#--            <#list spring.status.getErrorMessages() as error>-->
-<#--                <span class="error">${error}</span>-->
-<#--                <br>-->
-<#--            </#list>-->
-        </#if>
+        <@spring.bind 'userForm.email'/>
+        <div class="form-group<#if spring.status.error> has-error</#if>">
+            <input type="text" name="${spring.status.expression}" value="${spring.status.value?html}"
+                placeholder="e-mail"
+            />
+            <#if spring.status.error>
+                <ul>
+                    <#list spring.status.errorMessages as error> <li>${error}</li> </#list>
+                </ul>
+            </#if>
+        </div>
 
+        <@spring.bind 'userForm.password'/>
+        <div class="form-group<#if spring.status.error> has-error</#if>">
+            <input type="password" name="${spring.status.expression}" value=""
+                   placeholder="Password"
+            />
+            <#if spring.status.error>
+                <ul>
+                    <#list spring.status.errorMessages as error> <li>${error}</li> </#list>
+                </ul>
+            </#if>
+        </div>
+
+        <@spring.bind 'userForm.passwordConfirm'/>
+        <div class="form-group<#if spring.status.error> has-error</#if>">
+            <input type="password" name="${spring.status.expression}" value=""
+                   placeholder="Confirm your password"
+            />
+            <#if spring.status.error>
+                <ul>
+                    <#list spring.status.errorMessages as error> <li>${error}</li> </#list>
+                </ul>
+            </#if>
+        </div>
 
 <#--        <spring:bind path="username">-->
 <#--            <div class="form-group ${status.error ? 'has-error' : ''}">-->
@@ -46,24 +88,24 @@
 <#--        </spring:bind>-->
 
 
-        <div class="form-group">
-            <input type="text" name="name" class="form-control" placeholder="Username"
-                   value="${userForm.getName()}"
-            />
-            <errors path="name"></errors>
-        </div>
+<#--        <div class="form-group">-->
+<#--            <input type="text" name="name" class="form-control" placeholder="Username"-->
+<#--                   value="${userForm.getName()}"-->
+<#--            />-->
+<#--            <errors path="name"></errors>-->
+<#--        </div>-->
 
-        <div class="form-group">
-            <input type="password" name="password" class="form-control" placeholder="Password"
-            />
-            <errors path="password"></errors>
-        </div>
+<#--        <div class="form-group">-->
+<#--            <input type="password" name="password" class="form-control" placeholder="Password"-->
+<#--            />-->
+<#--            <errors path="password"></errors>-->
+<#--        </div>-->
 
-        <div class="form-group">
-            <input type="password" name="passwordConfirm" class="form-control"
-                        placeholder="Confirm your password" />
-            <errors path="passwordConfirm"></errors>
-        </div>
+<#--        <div class="form-group">-->
+<#--            <input type="password" name="passwordConfirm" class="form-control"-->
+<#--                        placeholder="Confirm your password" />-->
+<#--            <errors path="passwordConfirm"></errors>-->
+<#--        </div>-->
         <input type="hidden" name="_csrf" value="${_csrf.token}" />
 
         <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
