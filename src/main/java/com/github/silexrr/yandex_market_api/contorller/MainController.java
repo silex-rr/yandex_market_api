@@ -11,9 +11,9 @@ public class MainController {
 
     @GetMapping("/")
     public String main (Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        model.addAttribute( "authUser",  authentication);
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//
+//        model.addAttribute( "authUser",  authentication);
         return "main";
     }
 }

@@ -1,4 +1,5 @@
 package com.github.silexrr.yandex_market_api.auth.web;
+import com.github.silexrr.yandex_market_api.auth.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
