@@ -5,6 +5,8 @@ import com.github.silexrr.yandex_market_api.auth.service.SecurityService;
 import com.github.silexrr.yandex_market_api.auth.service.UserService;
 import com.github.silexrr.yandex_market_api.auth.validator.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -74,6 +76,15 @@ public class UserController {
 
         return "auth/login";
     }
+
+//    @PostMapping("/logout")
+//    public String logout() {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        if (authentication != null) {
+//
+//        }
+//        return "redirect:/";
+//    }
 
 //    @GetMapping({"/", "/welcome"})
 //    public String welcome(Model model) {

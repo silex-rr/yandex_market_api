@@ -11,8 +11,15 @@
 </head>
 <body>
     <#include "navbar.ftl">
-    <div class="container">
-        <#nested>
+    <div class="container-fluid">
+        <div class="row flex-xl-nowrap">
+            <div class="col-12 col-md-3 col-xl-2 bd-sidebar">
+                <#include "leftMenu.ftl">
+            </div>
+            <main class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5 bd-content" role="main">
+                <#nested>
+            </main>
+        </div>
     </div>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
