@@ -3,8 +3,9 @@ package com.github.silexrr.yandex_market_api.shop.model;
 import com.github.silexrr.yandex_market_api.auth.model.User;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import java.lang.annotation.Annotation;
 import java.util.List;
 
 @Entity
@@ -13,8 +14,11 @@ public class Shop {
     @Id
     private String id;
 
+    @NotBlank(message = "Name cannot be empty")
     private String name;
+    @NotBlank(message = "YM login cannot be empty")
     private String ymLogin;
+    @NotBlank(message = "YM company ID cannot be empty")
     private Integer ymCompanyId;
     private Integer ymRegionId;
     private boolean enable;
@@ -25,6 +29,8 @@ public class Shop {
 
     private List<PriceList> priceLists;
 
+    @ElementCollection(targetClass = User.class, fetch = FetchType.EAGER)
+    @ManyToMany
     private User userOwner;
 
     public Shop() {

@@ -45,16 +45,16 @@ public class UserController {
     ) {
         userValidator.validate(userForm, bindingResult);
 //        bindingResult.errorM
-        System.out.println(userForm);
-        System.out.println(bindingResult);
+//        System.out.println(userForm);
+//        System.out.println(bindingResult);
 //        bindingResult
 //        model.addAttribute("userForm", userForm);
 //        model.addAttribute("bindingResult", bindingResult);
-        System.out.println(bindingResult.hasErrors());
+//        System.out.println(bindingResult.hasErrors());
         List<ObjectError> allErrors = bindingResult.getAllErrors();
-        for (ObjectError error: allErrors) {
-            System.out.println(error.getCode() + " " + error.getDefaultMessage());
-        }
+//        for (ObjectError error: allErrors) {
+////            System.out.println(error.getCode() + " " + error.getDefaultMessage());
+//        }
         if (bindingResult.hasErrors()) {
             return "auth/registration";
         }

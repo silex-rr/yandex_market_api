@@ -34,4 +34,5 @@
             </#list>
         </tbody>
     </table>
+    <a class="btn btn-dark" href="/shop/add">Add new</a>
 </@c.page>
