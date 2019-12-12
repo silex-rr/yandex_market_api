@@ -4,8 +4,7 @@ import com.github.silexrr.yandex_market_api.auth.model.User;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -14,11 +13,8 @@ public class Shop {
     @Id
     private String id;
 
-    @NotBlank(message = "Name cannot be empty")
     private String name;
-    @NotBlank(message = "YM login cannot be empty")
     private String ymLogin;
-    @NotBlank(message = "YM company ID cannot be empty")
     private Integer ymCompanyId;
     private Integer ymRegionId;
     private boolean enable;
@@ -34,6 +30,13 @@ public class Shop {
     private User userOwner;
 
     public Shop() {
+        this.name = "";
+        this.ymLogin = "";
+        this.ymCompanyId = 0;
+        this.ymRegionId = 0;
+        this.moderators = new ArrayList<User>();
+        this.tokens = new ArrayList<Token>();
+        this.priceLists = new ArrayList<PriceList>();
     }
 
     public String getName() {

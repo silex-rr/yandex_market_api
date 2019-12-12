@@ -1,6 +1,8 @@
 package com.github.silexrr.yandex_market_api.auth.web;
 
+import com.github.silexrr.yandex_market_api.auth.model.Role;
 import com.github.silexrr.yandex_market_api.auth.model.User;
+import com.github.silexrr.yandex_market_api.auth.repository.UserRepository;
 import com.github.silexrr.yandex_market_api.auth.service.SecurityService;
 import com.github.silexrr.yandex_market_api.auth.service.UserService;
 import com.github.silexrr.yandex_market_api.auth.validator.UserValidator;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
+import java.util.Set;
 
 
 @Controller
@@ -30,6 +33,9 @@ public class UserController {
 
     @Autowired
     private UserValidator userValidator;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @GetMapping("/registration")
     public String registration(Model model) {
@@ -51,7 +57,7 @@ public class UserController {
 //        model.addAttribute("userForm", userForm);
 //        model.addAttribute("bindingResult", bindingResult);
 //        System.out.println(bindingResult.hasErrors());
-        List<ObjectError> allErrors = bindingResult.getAllErrors();
+//        List<ObjectError> allErrors = bindingResult.getAllErrors();
 //        for (ObjectError error: allErrors) {
 ////            System.out.println(error.getCode() + " " + error.getDefaultMessage());
 //        }
@@ -59,6 +65,14 @@ public class UserController {
             return "auth/registration";
         }
 
+        long count = userRepository.count();
+//        System.out.println(count);
+        if (count == (long) 0) {
+            Set<Role> roles = userForm.getRoles();
+            roles.add(Role.ADMIN);
+            userForm.setRoles(roles);
+            userForm.setActive(true);
+        }
         userService.save(userForm);
 
         securityService.autoLogin(userForm.getLogin(), userForm.getPasswordConfirm());

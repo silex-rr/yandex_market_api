@@ -1,20 +1,11 @@
 package com.github.silexrr.yandex_market_api.shop.model;
 
 public class Token {
-    private Shop shop;
     private String oauthToken;
     private String oauthClientId;
     private boolean enable;
 
     public Token() {
-    }
-
-    public Shop getShop() {
-        return shop;
-    }
-
-    public void setShop(Shop shop) {
-        this.shop = shop;
     }
 
     public String getOauthToken() {
@@ -44,7 +35,6 @@ public class Token {
     @Override
     public String toString() {
         return "Token{" +
-                "shop=" + shop +
                 ", oauthToken='" + oauthToken + '\'' +
                 ", oauthClientId='" + oauthClientId + '\'' +
                 ", enable=" + enable +

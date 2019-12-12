@@ -8,13 +8,9 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.ValidatorFactory;
-import java.util.Set;
-
 @Component
 public class UserValidator implements Validator {
+
     @Autowired
     private UserService userService;
 

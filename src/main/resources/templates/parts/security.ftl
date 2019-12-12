@@ -8,6 +8,7 @@
         userId = user.getId()
         userName = user.getName()
         isAdmin = user.isAdmin()
+<#--    isAdmin = false-->
     >
 
 <#--    ${user.getName()} /  ${user.getLogin()} / ${user.getUid()}-->

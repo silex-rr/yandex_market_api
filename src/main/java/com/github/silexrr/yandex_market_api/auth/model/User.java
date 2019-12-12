@@ -9,6 +9,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -37,6 +38,7 @@ public class User implements UserDetails {
         this.login = "";
         this.name = "";
         this.email = "";
+        this.roles = new HashSet<Role>();
     }
 
     public User(String id, String login, String name, String password) {
