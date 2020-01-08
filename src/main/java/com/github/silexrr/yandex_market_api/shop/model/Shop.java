@@ -87,6 +87,10 @@ public class Shop {
         this.ymRegionId = ymRegionId;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getId() {
         return id;
     }
@@ -114,6 +118,7 @@ public class Shop {
     public void setModerators(List<User> moderators) {
         this.moderators = moderators;
     }
+
 
     @Override
     public String toString() {

@@ -13,14 +13,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequestMapping(value = "/shop")
@@ -47,42 +42,76 @@ public class ShopController {
         return "shop/list";
     }
 
-    @GetMapping("/add")
-    public String addPrepare( Model model ) {
-        model.addAttribute("shopForm", new Shop());
-        return "shop/add";
+    @PostMapping("/list")
+    public String shopDelete( @RequestParam(value = "delete") Shop shop) {
+        if (shop != null) {
+            shopService.delete(shop);
+        }
+        return "redirect:/shop/list";
     }
 
-    @PostMapping("/add")
-    public String addExecute(
-            @ModelAttribute("shopForm") Shop shopForm,
-            BindingResult bindingResult
+    @GetMapping("/edit/{shop}")
+    public String shopEdit(
+            Model model,
+            @PathVariable(value = "shop") Optional<Shop> shopOptional
     ) {
-        if (shopForm.getYmCompanyId() == null) {
-            shopForm.setYmCompanyId(0);
+        if (shopOptional.isPresent()) {
+            model.addAttribute("shop", shopOptional.get());
+        } else {
+            model.addAttribute("shop", new Shop());
         }
-        if (shopForm.getYmRegionId() == null) {
-            shopForm.setYmRegionId(0);
+        return "shop/edit";
+    }
+
+    @PostMapping("/edit/{shop}")
+    public String shopEditSave(
+            @PathVariable(value = "shop") Optional<Shop> shopOptional,
+            @ModelAttribute("shop") Shop shop,
+            BindingResult bindingResult
+    ){
+        if (shopOptional.isPresent()) {
+            shop.setId(shopOptional.get().getId());
+        }
+        if (shop.getYmCompanyId() == null) {
+            shop.setYmCompanyId(0);
+        }
+        if (shop.getYmRegionId() == null) {
+            shop.setYmRegionId(0);
         }
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null ) {
             User principal = (User)authentication.getPrincipal();
-            shopForm.setUserOwner(principal);
+            shop.setUserOwner(principal);
         }
 
-        shopValidator.validate(shopForm, bindingResult);
+        shopValidator.validate(shop, bindingResult);
         List<ObjectError> allErrors = bindingResult.getAllErrors();
         for (ObjectError error: allErrors) {
             System.out.println(error.getCode() + " " + error.getDefaultMessage());
         }
         if (bindingResult.hasErrors()) {
-            return  "shop/add";
+            return  "shop/edit/new";
         }
 
-
-        shopService.save(shopForm);
-        return "redirect:/shop/list";
-
+        shopService.save(shop);
+        return "redirect:/shop/edit/" + shop.getId();
     }
+
+
+
+//    @GetMapping("/edit/new")
+//    public String addPrepare( Model model ) {
+//        model.addAttribute("shop", new Shop());
+//        return "shop/edit";
+//    }
+//
+//    @PostMapping("/edit/new")
+//    public String addExecute(
+//            @ModelAttribute("shop") Shop shop,
+//            BindingResult bindingResult
+//    ) {
+//
+//
+//    }
 }

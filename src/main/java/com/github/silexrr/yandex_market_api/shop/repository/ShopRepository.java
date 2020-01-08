@@ -9,13 +9,15 @@ import java.util.List;
 import java.util.UUID;
 
 public interface ShopRepository extends MongoRepository<Shop, String> {
-    public Shop findById(UUID id);
+    public Shop findById(UUID uuid);
 
     public Shop findByName(String name);
 
     public Shop findByYmCompanyId(Integer YmCompanyId);
 
     public List<Shop> findByUserOwner(Object user);
+
+    public void deleteById(UUID uuid);
 
     @Query("{'token.oauthToken': ?0}")
     public List<Shop> findByOauthToken(String token);

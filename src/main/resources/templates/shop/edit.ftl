@@ -2,19 +2,28 @@
 <#import "/spring.ftl" as spring>
 
 <@c.page>
-    <form method="post" action="/shop/add" modelAtribute="shopForm" class="form-add-shop">
+    <form
+            method="post"
+            action="/shop/edit/<#if shop.getId()??>${shop.getId()}<#else>new</#if>"
+            modelAtribute="shop"
+            class="form-<#if shop.getId()??>edit<#else >add</#if>-shop"
+    >
         <input type="hidden" name="_csrf" value="${_csrf.token}" />
 
-        <h2 class="mb-5">Create new Shop</h2>
+        <#if shop.getId()??>
+            <h2 class="mb-5">Edit Shop "${shop.getName()}"</h2>
+        <#else >
+            <h2 class="mb-5">Create new Shop</h2>
+        </#if>
 
-        <@spring.bind 'shopForm.userOwner'/>
+        <@spring.bind 'shop.userOwner'/>
         <#if spring.status.error>
             <ul class="text-danger">
                 <#list spring.status.errorMessages as error> <li>${error}</li> </#list>
             </ul>
         </#if>
 
-        <@spring.bind 'shopForm.name'/>
+        <@spring.bind 'shop.name'/>
         <div class="form-group row <#if spring.status.error>has-error</#if>">
             <label class="col-sm-2 col-form-name">Name:</label>
             <div class="col-sm-6">
@@ -30,7 +39,7 @@
             </div>
         </div>
 
-        <@spring.bind 'shopForm.ymLogin'/>
+        <@spring.bind 'shop.ymLogin'/>
         <div class="form-group row <#if spring.status.error>has-error</#if>">
             <label class="col-sm-2 col-form-name">Yandex Market Login:</label>
             <div class="col-sm-6">
@@ -46,7 +55,7 @@
             </div>
         </div>
 
-        <@spring.bind 'shopForm.ymCompanyId'/>
+        <@spring.bind 'shop.ymCompanyId'/>
         <div class="form-group row <#if spring.status.error>has-error</#if>">
             <label class="col-sm-2 col-form-name">YM Company ID:</label>
             <div class="col-sm-6">
@@ -63,7 +72,7 @@
             </div>
         </div>
 
-        <@spring.bind 'shopForm.ymRegionId'/>
+        <@spring.bind 'shop.ymRegionId'/>
         <div class="form-group row <#if spring.status.error>has-error</#if>">
             <label class="col-sm-2 col-form-name">YM Region ID:</label>
             <div class="col-sm-6">
@@ -81,7 +90,13 @@
         </div>
 
 
-        <button class="btn btn-dark btn-primary btn-block col-sm-8 mt-5" type="submit">Create</button>
+        <button class="btn btn-dark btn-primary btn-block col-sm-8 mt-5" type="submit">
+            <#if shop.getId()??>
+                Update
+            <#else >
+                Create
+            </#if>
+        </button>
 
     </form>
 </@c.page>

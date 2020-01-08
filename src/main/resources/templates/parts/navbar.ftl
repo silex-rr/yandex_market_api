@@ -19,7 +19,7 @@
 
                 <#if isAdmin>
                     <li class="nav-item">
-                        <a class="nav-link" href="/auth/users">User list</a>
+                        <a class="nav-link" href="/auth/users">Users</a>
                     </li>
                 </#if>
             </ul>
