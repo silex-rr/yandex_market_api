@@ -9,7 +9,7 @@
             <th scope="col">Enable</th>
             <th scope="col">YM Company ID</th>
             <th scope="col">YM Region ID</th>
-            <th scope="col">Action</th>
+            <th scope="col">Actions</th>
         </thead>
         <tbody>
             <#list shops as shop>

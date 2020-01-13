@@ -28,7 +28,9 @@ public class ShopValidator implements Validator {
 
         Shop shop = (Shop) o;
         Shop shopInDbByName = this.shopRepository.findByName(shop.getName());
-        if (shopInDbByName != null) {
+        if (shopInDbByName != null
+            && !shopInDbByName.getId().equals(shop.getId())
+        ) {
             errors.rejectValue(
                 "name",
                 "Shop.name.taken"
@@ -44,7 +46,9 @@ public class ShopValidator implements Validator {
             );
         } else {
             Shop shopInDbByYmCompanyId = this.shopRepository.findByYmCompanyId(ymCompanyId);
-            if (shopInDbByYmCompanyId != null) {
+            if (shopInDbByYmCompanyId != null
+                && !shopInDbByYmCompanyId.getId().equals(shop.getId())
+            ) {
                 errors.rejectValue(
                         "ymCompanyId",
                         "Shop.ymCompanyId.taken"

@@ -29,6 +29,7 @@ public class ShopServiceImpl implements ShopService{
         return shopRepository.findById(uuid);
     }
 
+    @Override
     public void delete(Shop shop) {
         shopRepository.delete(shop);
     }

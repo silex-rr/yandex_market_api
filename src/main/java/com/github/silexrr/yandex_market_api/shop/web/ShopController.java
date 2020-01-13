@@ -53,13 +53,9 @@ public class ShopController {
     @GetMapping("/edit/{shop}")
     public String shopEdit(
             Model model,
-            @PathVariable(value = "shop") Optional<Shop> shopOptional
+            @PathVariable(value = "shop") Shop shop
     ) {
-        if (shopOptional.isPresent()) {
-            model.addAttribute("shop", shopOptional.get());
-        } else {
-            model.addAttribute("shop", new Shop());
-        }
+        model.addAttribute("shop", shop);
         return "shop/edit";
     }
 
@@ -79,10 +75,12 @@ public class ShopController {
             shop.setYmRegionId(0);
         }
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null ) {
-            User principal = (User)authentication.getPrincipal();
-            shop.setUserOwner(principal);
+        if(shop.getUserOwner() == null) {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication != null ) {
+                User principal = (User)authentication.getPrincipal();
+                shop.setUserOwner(principal);
+            }
         }
 
         shopValidator.validate(shop, bindingResult);
@@ -91,7 +89,7 @@ public class ShopController {
             System.out.println(error.getCode() + " " + error.getDefaultMessage());
         }
         if (bindingResult.hasErrors()) {
-            return  "shop/edit/new";
+            return  "shop/edit";
         }
 
         shopService.save(shop);
@@ -100,11 +98,11 @@ public class ShopController {
 
 
 
-//    @GetMapping("/edit/new")
-//    public String addPrepare( Model model ) {
-//        model.addAttribute("shop", new Shop());
-//        return "shop/edit";
-//    }
+    @GetMapping("/edit/new")
+    public String addPrepare( Model model ) {
+        model.addAttribute("shop", new Shop());
+        return "shop/edit";
+    }
 //
 //    @PostMapping("/edit/new")
 //    public String addExecute(
