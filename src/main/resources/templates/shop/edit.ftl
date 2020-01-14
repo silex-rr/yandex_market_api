@@ -10,11 +10,7 @@
     >
         <input type="hidden" name="_csrf" value="${_csrf.token}" />
 
-        <#if shop.getId()??>
-            <h2 class="mb-5">Edit Shop "${shop.getName()}"</h2>
-        <#else >
-            <h2 class="mb-5">Create new Shop</h2>
-        </#if>
+        <h2 class="mb-5"><#if shop.getId()??>Edit Shop "${shop.getName()}"<#else >Add new shop</#if></h2>
 
         <@spring.bind 'shop.userOwner'/>
         <#if spring.status.error>
@@ -94,7 +90,7 @@
             <#if shop.getId()??>
                 Update
             <#else >
-                Create
+                Add
             </#if>
         </button>
 

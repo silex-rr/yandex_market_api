@@ -3,9 +3,8 @@ package com.github.silexrr.yandex_market_api.shop.web;
 import com.github.silexrr.yandex_market_api.auth.model.User;
 import com.github.silexrr.yandex_market_api.shop.model.Shop;
 import com.github.silexrr.yandex_market_api.shop.repository.ShopRepository;
-import com.github.silexrr.yandex_market_api.shop.service.ShopValidator;
 import com.github.silexrr.yandex_market_api.shop.service.ShopService;
-
+import com.github.silexrr.yandex_market_api.shop.service.ShopValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,29 +14,36 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping(value = "/shop")
 public class ShopController {
+
     @Autowired
     private ShopRepository shopRepository;
-
     @Autowired
     private ShopService shopService;
-
     @Autowired
     private ShopValidator shopValidator;
 
     @GetMapping("/list")
-    public String list(Map<String, Object> model) {
+    public String list(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        List<Shop> shops = new ArrayList<Shop>();
+        List<Shop> shops = new ArrayList<>();
         if (authentication != null) {
             User principal = (User)authentication.getPrincipal();
             shops = shopRepository.findByUserOwner(principal);
         }
-        model.put("shops", shops);
+        HashMap<String, Integer> shopsTokenCount = new HashMap<>();
+
+        shops.forEach(shop -> shopsTokenCount.put(shop.getId(), shopService.countToken(shop)));
+
+        model.addAttribute("shops", shops);
+        model.addAttribute("shopsTokenCount", shopsTokenCount);
 
         return "shop/list";
     }
@@ -65,9 +71,7 @@ public class ShopController {
             @ModelAttribute("shop") Shop shop,
             BindingResult bindingResult
     ){
-        if (shopOptional.isPresent()) {
-            shop.setId(shopOptional.get().getId());
-        }
+        shopOptional.ifPresent(value -> shop.setId(value.getId()));
         if (shop.getYmCompanyId() == null) {
             shop.setYmCompanyId(0);
         }

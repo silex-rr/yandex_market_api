@@ -21,10 +21,6 @@ public class Shop {
 
     private List<User> moderators;
 
-    private List<Token> tokens;
-
-    private List<PriceList> priceLists;
-
     @ElementCollection(targetClass = User.class, fetch = FetchType.EAGER)
     @ManyToMany
     private User userOwner;
@@ -35,8 +31,6 @@ public class Shop {
         this.ymCompanyId = 0;
         this.ymRegionId = 0;
         this.moderators = new ArrayList<User>();
-        this.tokens = new ArrayList<Token>();
-        this.priceLists = new ArrayList<PriceList>();
     }
 
     public String getName() {
@@ -95,22 +89,6 @@ public class Shop {
         return id;
     }
 
-    public List<Token> getTokens() {
-        return tokens;
-    }
-
-    public void setTokens(List<Token> tokens) {
-        this.tokens = tokens;
-    }
-
-    public List<PriceList> getPriceLists() {
-        return priceLists;
-    }
-
-    public void setPriceLists(List<PriceList> priceLists) {
-        this.priceLists = priceLists;
-    }
-
     public List<User> getModerators() {
         return moderators;
     }
@@ -130,8 +108,6 @@ public class Shop {
                 ", ymRegionId=" + ymRegionId +
                 ", enable=" + enable +
                 ", moderators=" + moderators +
-                ", tokens=" + tokens +
-                ", priceLists=" + priceLists +
                 ", userOwner=" + userOwner +
                 '}';
     }

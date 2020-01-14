@@ -6,6 +6,7 @@ import com.github.silexrr.yandex_market_api.shop.model.Token;
 import com.github.silexrr.yandex_market_api.shop.repository.TokenRepository;
 import com.github.silexrr.yandex_market_api.shop.service.TokenService;
 
+import com.github.silexrr.yandex_market_api.shop.service.TokenValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,9 +26,10 @@ public class TokenController {
 
     @Autowired
     private TokenRepository tokenRepository;
-
     @Autowired
     private TokenService tokenService;
+    @Autowired
+    private TokenValidator tokenValidator;
 
 
     @GetMapping("/list")

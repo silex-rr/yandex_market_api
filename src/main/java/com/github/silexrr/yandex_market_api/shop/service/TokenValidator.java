@@ -23,6 +23,7 @@ public class TokenValidator implements Validator {
     public void validate(Object o, Errors errors) {
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "oauthToken", "NotEmpty");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "oauthClientId", "NotEmpty");
+
         Token token = (Token) o;
 
         Token tokenByOauthClientId = tokenRepository.findByOauthClientId(token.getOauthClientId());

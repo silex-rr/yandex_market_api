@@ -9,6 +9,7 @@
             <th scope="col">Enable</th>
             <th scope="col">YM Company ID</th>
             <th scope="col">YM Region ID</th>
+            <th scope="col">Tokens</th>
             <th scope="col">Actions</th>
         </thead>
         <tbody>
@@ -24,6 +25,15 @@
                     </td>
                     <td>${shop.getYmCompanyId()}</td>
                     <td>${shop.getYmRegionId()}</td>
+                    <td>
+                        <a href="/shop/${shop.getId()}/token/list">
+                            <#if shopsTokenCount[shop.getId()]??>
+                                ${shopsTokenCount[shop.getId()]}
+                            <#else >
+                                0
+                            </#if>
+                        </a>
+                    </td>
                     <td>
                         <a href="/shop/edit/${shop.getId()}" class="btn d-inline p-2 text-primary">
                             <i class="fas fa-pen"></i>

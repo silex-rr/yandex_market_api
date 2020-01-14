@@ -9,4 +9,5 @@ public interface ShopService {
     void delete(Shop shop);
     Shop findByName(String name);
     Shop findById(UUID id);
+    int countToken(Shop shop);
 }

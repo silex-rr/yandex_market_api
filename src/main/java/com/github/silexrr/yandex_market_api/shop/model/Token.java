@@ -2,7 +2,9 @@ package com.github.silexrr.yandex_market_api.shop.model;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import java.util.Date;
 
@@ -20,11 +22,17 @@ public class Token {
     private Date expireTo;
     private Enum<TokenType> type;
 
+    @ElementCollection(targetClass = Shop.class, fetch = FetchType.EAGER)
     private Shop shop;
 
     private boolean enable;
 
     public Token() {
+        this.name = "";
+        this.oauthClientId = "";
+        this.oauthToken = "";
+        this.expireTo = new Date();
+        this.type = TokenType.bearer;
     }
 
     public String getOauthToken() {
@@ -95,6 +103,7 @@ public class Token {
     public String toString() {
         return "Token{" +
                 "id='" + id + '\'' +
+                ", name='" + name + '\'' +
                 ", oauthToken='" + oauthToken + '\'' +
                 ", oauthClientId='" + oauthClientId + '\'' +
                 ", expireTo=" + expireTo +

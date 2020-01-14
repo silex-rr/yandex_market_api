@@ -34,6 +34,15 @@ public class User implements UserDetails {
     @ManyToMany
     private Set<Role> roles;
 
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof User)) {
+            return false;
+        }
+        User user = (User)o;
+        return this.getId().equals(user.getId());
+    }
+
     public User() {
         this.login = "";
         this.name = "";
