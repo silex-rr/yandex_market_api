@@ -88,10 +88,10 @@ public class ShopController {
         }
 
         shopValidator.validate(shop, bindingResult);
-        List<ObjectError> allErrors = bindingResult.getAllErrors();
-        for (ObjectError error: allErrors) {
-            System.out.println(error.getCode() + " " + error.getDefaultMessage());
-        }
+//        List<ObjectError> allErrors = bindingResult.getAllErrors();
+//        for (ObjectError error: allErrors) {
+//            System.out.println(error.getCode() + " " + error.getDefaultMessage());
+//        }
         if (bindingResult.hasErrors()) {
             return  "shop/edit";
         }

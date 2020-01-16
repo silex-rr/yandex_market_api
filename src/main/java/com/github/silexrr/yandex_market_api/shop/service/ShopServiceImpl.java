@@ -1,10 +1,13 @@
 package com.github.silexrr.yandex_market_api.shop.service;
 
+import com.github.silexrr.yandex_market_api.auth.model.User;
 import com.github.silexrr.yandex_market_api.shop.model.Shop;
 import com.github.silexrr.yandex_market_api.shop.model.Token;
 import com.github.silexrr.yandex_market_api.shop.repository.ShopRepository;
 import com.github.silexrr.yandex_market_api.shop.repository.TokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -41,7 +44,23 @@ public class ShopServiceImpl implements ShopService{
 
     @Override
     public int countToken(Shop shop) {
-        List<Token> TokensByShop = tokenRepository.findByShop(shop);
-        return TokensByShop.size();
+        return 0;
+//        List<Token> TokensByShop = tokenRepository.findByShop(shop);
+//        return TokensByShop.size();
+    }
+
+    @Override
+    public boolean userHasAccess(Shop shop, User user) {
+        return shop.getUserOwner().equals(user);
+    }
+
+    @Override
+    public boolean currentUserHasAccess(Shop shop) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            return false;
+        }
+        User user = (User)authentication.getPrincipal();
+        return userHasAccess(shop, user);
     }
 }

@@ -1,6 +1,7 @@
 package com.github.silexrr.yandex_market_api.shop.model;
 
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -19,6 +20,7 @@ public class Token {
 
     private String oauthToken;
     private String oauthClientId;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date expireTo;
     private Enum<TokenType> type;
 

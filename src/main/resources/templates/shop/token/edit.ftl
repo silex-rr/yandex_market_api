@@ -81,9 +81,10 @@
 
         <@spring.bind 'token.expireTo' />
         <div class="form-group row <#if spring.status.error>has-error</#if>">
-            <label class="col-sm-2 col-form-label">Token</label>
+            <label class="col-sm-2 col-form-label">Expire to</label>
             <div class="col-sm-6">
                 <input type="date"
+                       dataformatas="yyyy-MM-dd"
                        name="${spring.status.expression}"
                        value="${spring.status.value}"
                        class="form-control"

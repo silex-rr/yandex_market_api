@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.List;
 
 public interface TokenRepository extends MongoRepository<Token, String> {
-    public List<Token> findByShop(Shop shop);
+    public List<Token> findByShop(Object shop);
 
     public Token findByOauthClientId(String oauthClientId);
     public Token findByOauthToken(String oauthToken);
