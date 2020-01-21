@@ -15,7 +15,7 @@ public interface ShopRepository extends MongoRepository<Shop, String> {
 
     public Shop findByYmCompanyId(Integer YmCompanyId);
 
-    public List<Shop> findByUserOwner(Object user);
+    public List<Shop> findByUserOwnersContains(User user);
 
     public void deleteById(UUID uuid);
 

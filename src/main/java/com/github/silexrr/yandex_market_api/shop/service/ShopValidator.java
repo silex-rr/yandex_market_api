@@ -24,7 +24,7 @@ public class ShopValidator implements Validator {
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "Shop.name.required");
         ValidationUtils.rejectIfEmpty(errors, "ymLogin", "NotEmpty");
         ValidationUtils.rejectIfEmpty(errors, "ymCompanyId", "NotEmpty");
-        ValidationUtils.rejectIfEmpty(errors, "userOwner", "Shop.error.needAuthentication");
+        ValidationUtils.rejectIfEmpty(errors, "userOwners", "Shop.error.needAuthentication");
 
         Shop shop = (Shop) o;
         Shop shopInDbByName = this.shopRepository.findByName(shop.getName());

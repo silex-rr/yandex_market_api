@@ -3,7 +3,6 @@ package com.github.silexrr.yandex_market_api.shop.web;
 import com.github.silexrr.yandex_market_api.auth.model.User;
 import com.github.silexrr.yandex_market_api.shop.model.Shop;
 import com.github.silexrr.yandex_market_api.shop.model.Token;
-import com.github.silexrr.yandex_market_api.shop.repository.TokenRepository;
 import com.github.silexrr.yandex_market_api.shop.service.ShopService;
 import com.github.silexrr.yandex_market_api.shop.service.TokenService;
 
@@ -17,17 +16,15 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 
-import javax.naming.Binding;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Controller
 @RequestMapping(value = "/shop/{shop}/token")
 public class TokenController {
 
-    @Autowired
-    private TokenRepository tokenRepository;
+//    @Autowired
+//    private TokenRepository tokenRepository;
     @Autowired
     private TokenService tokenService;
     @Autowired
@@ -41,9 +38,6 @@ public class TokenController {
             Map<String, Object> model,
             @PathVariable(value = "shop") Shop shop
     ) {
-        List<Token> tokens = tokenRepository.findByShop(shop);
-
-        model.put("tokens", tokens);
         model.put("shop", shop);
         return "/shop/token/list";
     }
@@ -58,7 +52,7 @@ public class TokenController {
             return "redirect:/";
         }
         User principal = (User) authentication.getPrincipal();
-        if (!shop.getUserOwner().equals(principal)) {
+        if (!shop.getUserOwners().contains(principal)) {
             return "redirect:/shop/list";
         }
         model.addAttribute("shop", shop);
@@ -76,19 +70,34 @@ public class TokenController {
         if(!shopService.currentUserHasAccess(shop)) {
             return "redirect:/shop/list";
         }
-        if (token.getShop() == null) {
-            token.setShop(shop);
-        }
+//        if (token.getShop() == null) {
+//            token.setShop(shop);
+//        }
 
         tokenValidator.validate(token, bindingResult);
 
         if (bindingResult.hasErrors()) {
-            return "/shop/" + shop.getId() + "/token/edit/new";
+            return "/shop//token/edit";
         }
+        List<Token> tokens = shop.getTokens();
+        tokens.add(token);
+        shop.setTokens(tokens);
+        shopService.save(shop);
 
-        tokenService.save(token);
+        //tokenService.save(token);
 
         return "redirect:/shop/" + shop.getId() + "/token/edit/" + token.getId();
+    }
+
+    @GetMapping("/edit/{token}")
+    public String show(
+            Model model,
+            @PathVariable(value = "shop") Shop shop,
+            @PathVariable(value = "token") Token token
+    ) {
+        model.addAttribute("token", token);
+        model.addAttribute("shop", shop);
+        return "/shop//token/edit";
     }
 
 }

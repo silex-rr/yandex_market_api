@@ -18,13 +18,6 @@
             for Shop "${shop.getName()}"
         </h2>
 
-        <@spring.bind 'token.shop' />
-        <#if spring.status.error >
-            <ul>
-                <#list spring.status.errorMessages as error><li>${error}</li></#list>
-            </ul>
-        </#if>
-
         <@spring.bind 'token.name' />
         <div class="form-group row <#if spring.status.error>has-error</#if>">
             <label class="col-sm-2 col-form-label">Name</label>
@@ -84,11 +77,10 @@
             <label class="col-sm-2 col-form-label">Expire to</label>
             <div class="col-sm-6">
                 <input type="date"
-                       dataformatas="yyyy-MM-dd"
+                       placeholder="YYYY-MM-DD"
                        name="${spring.status.expression}"
                        value="${spring.status.value}"
                        class="form-control"
-                       placeholder="oauth Token"
                 />
                 <#if spring.status.error>
                     <ul class="text-danger">

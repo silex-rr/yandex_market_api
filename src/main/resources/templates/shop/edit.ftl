@@ -12,7 +12,7 @@
 
         <h2 class="mb-5"><#if shop.getId()??>Edit Shop "${shop.getName()}"<#else >Add new shop</#if></h2>
 
-        <@spring.bind 'shop.userOwner'/>
+        <@spring.bind 'shop.userOwners'/>
         <#if spring.status.error>
             <ul class="text-danger">
                 <#list spring.status.errorMessages as error> <li>${error}</li> </#list>

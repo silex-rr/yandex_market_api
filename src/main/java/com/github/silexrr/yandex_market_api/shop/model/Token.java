@@ -1,35 +1,24 @@
 package com.github.silexrr.yandex_market_api.shop.model;
 
-import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
 import java.util.Date;
+import java.util.UUID;
 
-@Entity
-@Document(collection = "shopToken")
 public class Token {
 
-    @Id
     private String id;
-
     private String name;
-
     private String oauthToken;
     private String oauthClientId;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date expireTo;
     private Enum<TokenType> type;
 
-    @ElementCollection(targetClass = Shop.class, fetch = FetchType.EAGER)
-    private Shop shop;
-
     private boolean enable;
 
     public Token() {
+        this.id = UUID.randomUUID().toString();
         this.name = "";
         this.oauthClientId = "";
         this.oauthToken = "";
@@ -60,6 +49,7 @@ public class Token {
     public void setEnable(boolean enable) {
         this.enable = enable;
     }
+
 
     public String getId() {
         return id;
@@ -93,24 +83,14 @@ public class Token {
         this.type = type;
     }
 
-    public Shop getShop() {
-        return shop;
-    }
-
-    public void setShop(Shop shop) {
-        this.shop = shop;
-    }
-
     @Override
     public String toString() {
         return "Token{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
+                "name='" + name + '\'' +
                 ", oauthToken='" + oauthToken + '\'' +
                 ", oauthClientId='" + oauthClientId + '\'' +
                 ", expireTo=" + expireTo +
                 ", type=" + type +
-                ", shop=" + shop +
                 ", enable=" + enable +
                 '}';
     }

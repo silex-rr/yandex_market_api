@@ -14,7 +14,7 @@
             <th scope="col">Actions</th>
         </thead>
         <tbody>
-            <#list tokens as token>
+            <#list shop.getTokens() as token>
                 <tr>
                     <td>${token.getName()}</td>
                     <td>

@@ -11,7 +11,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -36,7 +35,7 @@ public class ShopController {
         List<Shop> shops = new ArrayList<>();
         if (authentication != null) {
             User principal = (User)authentication.getPrincipal();
-            shops = shopRepository.findByUserOwner(principal);
+            shops = shopRepository.findByUserOwnersContains(principal);
         }
         HashMap<String, Integer> shopsTokenCount = new HashMap<>();
 
@@ -79,11 +78,13 @@ public class ShopController {
             shop.setYmRegionId(0);
         }
 
-        if(shop.getUserOwner() == null) {
+        List<User> userOwners = shop.getUserOwners();
+        if(userOwners.size() == 0) {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             if (authentication != null ) {
                 User principal = (User)authentication.getPrincipal();
-                shop.setUserOwner(principal);
+                userOwners.add(principal);
+                shop.setUserOwners(userOwners);
             }
         }
 

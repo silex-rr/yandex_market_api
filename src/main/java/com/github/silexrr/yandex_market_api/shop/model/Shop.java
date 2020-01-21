@@ -1,6 +1,7 @@
 package com.github.silexrr.yandex_market_api.shop.model;
 
 import com.github.silexrr.yandex_market_api.auth.model.User;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.*;
@@ -19,18 +20,20 @@ public class Shop {
     private Integer ymRegionId;
     private boolean enable;
 
-    private List<User> moderators;
-
-    @ElementCollection(targetClass = User.class, fetch = FetchType.EAGER)
+    @ElementCollection(targetClass = User.class, fetch = FetchType.LAZY)
     @ManyToMany
-    private User userOwner;
+    @DBRef
+    private List<User> userOwners;
+
+    private List<Token> tokens;
 
     public Shop() {
         this.name = "";
         this.ymLogin = "";
         this.ymCompanyId = 0;
         this.ymRegionId = 0;
-        this.moderators = new ArrayList<User>();
+        this.userOwners = new ArrayList<User>();
+        this.tokens = new ArrayList<Token>();
     }
 
     public String getName() {
@@ -65,12 +68,12 @@ public class Shop {
         this.enable = enable;
     }
 
-    public User getUserOwner() {
-        return userOwner;
+    public List<User> getUserOwners() {
+        return userOwners;
     }
 
-    public void setUserOwner(User userOwner) {
-        this.userOwner = userOwner;
+    public void setUserOwners(List<User> userOwners) {
+        this.userOwners = userOwners;
     }
 
     public Integer getYmRegionId() {
@@ -89,14 +92,13 @@ public class Shop {
         return id;
     }
 
-    public List<User> getModerators() {
-        return moderators;
+    public List<Token> getTokens() {
+        return tokens;
     }
 
-    public void setModerators(List<User> moderators) {
-        this.moderators = moderators;
+    public void setTokens(List<Token> tokens) {
+        this.tokens = tokens;
     }
-
 
     @Override
     public String toString() {
@@ -107,8 +109,8 @@ public class Shop {
                 ", ymCompanyId=" + ymCompanyId +
                 ", ymRegionId=" + ymRegionId +
                 ", enable=" + enable +
-                ", moderators=" + moderators +
-                ", userOwner=" + userOwner +
+                ", userOwners=" + userOwners +
+                ", tokens=" + tokens +
                 '}';
     }
 }
