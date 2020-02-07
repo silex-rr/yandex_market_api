@@ -1,6 +1,6 @@
 package com.github.silexrr.yandex_market_api.config;
 
-import com.github.silexrr.yandex_market_api.shop.repository.TokenTypeConverter;
+import com.github.silexrr.yandex_market_api.shop.repository.TokenTypeReadConverter;
 import com.mongodb.MongoClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.mongo.MongoProperties;
@@ -34,7 +34,7 @@ public class MongoDbConfig {
     }
 
     public MongoCustomConversions mongoCustomConversions() {
-        converters.add(new TokenTypeConverter());
+        converters.add(new TokenTypeReadConverter());
         return new MongoCustomConversions(converters);
     }
 

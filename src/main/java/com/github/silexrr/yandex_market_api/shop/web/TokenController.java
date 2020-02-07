@@ -56,6 +56,7 @@ public class TokenController {
             return "redirect:/shop/list";
         }
         model.addAttribute("shop", shop);
+        model.addAttribute("isNew", true);
         model.addAttribute("token", new Token());
         return "/shop/token/edit";
     }
@@ -77,7 +78,7 @@ public class TokenController {
         tokenValidator.validate(token, bindingResult);
 
         if (bindingResult.hasErrors()) {
-            return "/shop//token/edit";
+            return "/shop/token/edit";
         }
         List<Token> tokens = shop.getTokens();
         tokens.add(token);
@@ -97,7 +98,7 @@ public class TokenController {
     ) {
         model.addAttribute("token", token);
         model.addAttribute("shop", shop);
-        return "/shop//token/edit";
+        return "/shop/token/edit";
     }
 
 }

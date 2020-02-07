@@ -2,9 +2,11 @@ package com.github.silexrr.yandex_market_api.shop.model;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.persistence.Entity;
 import java.util.Date;
 import java.util.UUID;
 
+@Entity
 public class Token {
 
     private String id;
@@ -23,7 +25,7 @@ public class Token {
         this.oauthClientId = "";
         this.oauthToken = "";
         this.expireTo = new Date();
-        this.type = TokenType.bearer;
+        this.type = TokenType.BEARER;
     }
 
     public String getOauthToken() {
@@ -49,7 +51,6 @@ public class Token {
     public void setEnable(boolean enable) {
         this.enable = enable;
     }
-
 
     public String getId() {
         return id;
@@ -81,6 +82,10 @@ public class Token {
 
     public void setType(Enum<TokenType> type) {
         this.type = type;
+    }
+
+    public void setType(String type) {
+        this.setType(TokenType.valueOf(type));
     }
 
     @Override

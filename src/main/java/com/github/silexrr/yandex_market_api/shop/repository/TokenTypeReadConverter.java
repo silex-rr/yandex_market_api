@@ -5,9 +5,10 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.convert.ReadingConverter;
 
 @ReadingConverter
-public class TokenTypeConverter implements Converter<String, TokenType> {
+public class TokenTypeReadConverter implements Converter<String, TokenType> {
     public TokenType convert(String s) {
-        return TokenType.valueOf(s);
+        TokenType tokenType = TokenType.valueOf(s);
+        return tokenType;
     }
 }
 

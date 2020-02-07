@@ -6,14 +6,14 @@
         action="/shop/${shop.getId()}/token/edit/<#if token.getId()??>${token.getId()}<#else>new</#if>"
         method="post"
         modelAtribute="token"
-        class="form-<#if token.getId()??>edit<#else >add</#if>-shop"
+        class="form-<#if isNew??>add<#else >edit</#if>-shop"
     >
         <input type="hidden" name="_csrf" value="${_csrf.token}" />
         <h2>
-            <#if token.getId()??>
-                Edit Token "${token.getName()}"
-            <#else >
+            <#if isNew??>
                 Add new Token
+            <#else >
+                Edit Token "${token.getName()}"
             </#if>
             for Shop "${shop.getName()}"
         </h2>
@@ -91,10 +91,10 @@
         </div>
 
         <button class="btn btn-dark btn-primary btn-block col-sm-8 mt-5" type="submit">
-            <#if token.getId()??>
-                Update
-            <#else >
+            <#if isNew??>
                 Add
+            <#else >
+                Update
             </#if>
         </button>
     </form>
