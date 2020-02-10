@@ -1,23 +1,21 @@
 package com.github.silexrr.yandex_market_api.config;
 
-import com.github.silexrr.yandex_market_api.shop.repository.TokenTypeReadConverter;
+import com.github.silexrr.yandex_market_api.shop.repository.TokenConverter;
 import com.mongodb.MongoClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.mongo.MongoProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.core.convert.converter.Converter;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
-import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
 
-@EnableMongoRepositories(
-        basePackages = {"com.github.silexrr.yandex_market_api.auth.repository"})
+
+@Configuration
+
 public class MongoDbConfig {
-    private final List<Converter<?, ?>> converters = new ArrayList<Converter<?, ?>>();
 
     @Autowired
     private MongoClient mongoClient;
@@ -26,17 +24,17 @@ public class MongoDbConfig {
 
     @Bean
     public MongoTemplate mongoTemplate() {
+
         MongoTemplate mongoTemplate = new MongoTemplate(mongoClient, mongoProperties.getDatabase());
-        MappingMongoConverter mongoConverter = (MappingMongoConverter) mongoTemplate.getConverter();
-        mongoConverter.setCustomConversions(mongoCustomConversions());
-        mongoConverter.afterPropertiesSet();
+        MappingMongoConverter mongoMapping = (MappingMongoConverter) mongoTemplate.getConverter();
+        mongoMapping.setCustomConversions(customConversions()); // tell mongodb to use the custom converters
+        mongoMapping.afterPropertiesSet();
         return mongoTemplate;
+
     }
 
-    public MongoCustomConversions mongoCustomConversions() {
-        converters.add(new TokenTypeReadConverter());
-        return new MongoCustomConversions(converters);
+    public MongoCustomConversions customConversions() {
+        return new MongoCustomConversions(Collections.singletonList(new TokenConverter.TokenTypeConverter()));
     }
 
 }
-//@WritingConverter

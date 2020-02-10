@@ -15,7 +15,7 @@ public class Token {
     private String oauthClientId;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date expireTo;
-    private Enum<TokenType> type;
+    private TokenType type;
 
     private boolean enable;
 
@@ -76,11 +76,11 @@ public class Token {
         this.expireTo = expireTo;
     }
 
-    public Enum<TokenType> getType() {
+    public TokenType getType() {
         return type;
     }
 
-    public void setType(Enum<TokenType> type) {
+    public void setType(TokenType type) {
         this.type = type;
     }
 
