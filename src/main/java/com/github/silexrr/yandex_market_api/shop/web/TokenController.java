@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Controller
 @RequestMapping(value = "/shop/{shop}/token")
@@ -42,6 +43,25 @@ public class TokenController {
         return "/shop/token/list";
     }
 
+    @PostMapping("/list")
+    public String tokenDelete(
+        @PathVariable(value = "shop") Shop shop,
+        @RequestParam(value = "delete") String tokenId
+    ) {
+        User principal = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (shop != null
+            && shopService.userHasAccess(shop, principal)
+        ) {
+            Token token = shopService.findTokenById(shop, tokenId);
+            if (token != null) {
+                if (shopService.removeToken(shop, token)) {
+                    shopService.save(shop);
+                }
+            }
+        }
+        return "redirect:/shop/" + shop.getId() + "/token/list";
+    }
+
     @GetMapping("/edit/new")
     public String addPrepare(
             Model model,
@@ -64,6 +84,7 @@ public class TokenController {
     @PostMapping("/edit/{token}")
     public String edit(
             @PathVariable(value = "shop") Shop shop,
+            @PathVariable(value = "token") String tokenId,
             @ModelAttribute(value = "token") Token token,
             BindingResult bindingResult
     ){
@@ -71,16 +92,24 @@ public class TokenController {
         if(!shopService.currentUserHasAccess(shop)) {
             return "redirect:/shop/list";
         }
-//        if (token.getShop() == null) {
-//            token.setShop(shop);
-//        }
 
+//        Token token = shopService.findTokenById(shop, tokenId);
+//        if (token == null) {
+//            token = new Token();
+////            return "redirect:/shop/" + shop.getId() + "/token/list";
+//        }
+        System.out.println(token.getId());
         tokenValidator.validate(token, bindingResult);
 
         if (bindingResult.hasErrors()) {
             return "/shop/token/edit";
         }
         List<Token> tokens = shop.getTokens();
+        Token tokenExist = shopService.findTokenById(shop, tokenId);
+        if (tokenExist != null) {
+            tokens.remove(tokenExist);
+            token.setId(tokenId);
+        }
         tokens.add(token);
         shop.setTokens(tokens);
         shopService.save(shop);
@@ -94,8 +123,13 @@ public class TokenController {
     public String show(
             Model model,
             @PathVariable(value = "shop") Shop shop,
-            @PathVariable(value = "token") Token token
+            @PathVariable(value = "token") String tokenId
     ) {
+        Token token = shopService.findTokenById(shop, tokenId);
+        if (token == null) {
+            return "redirect:/shop/" + shop.getId() + "/token/list";
+        }
+
         model.addAttribute("token", token);
         model.addAttribute("shop", shop);
         return "/shop/token/edit";

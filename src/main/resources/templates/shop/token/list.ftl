@@ -26,19 +26,16 @@
                     </td>
                     <td>${token.getOauthToken()}</td>
                     <td>${token.getOauthClientId()}</td>
-                    <td>${token.getExpireTo()}</td>
+                    <td>${token.getExpireTo()?string('yyyy-MM-dd')}</td>
                     <td>${token.getType()}</td>
-                    <td>${token}</td>
-                    <td>${token}</td>
                     <td>
-                        <a href="/shop/${shop.getId()}/token/${token.getId()}" class="btn d-inline p-2 text-primary">
+                        <a href="/shop/${shop.getId()}/token/edit/${token.getId()}" class="btn d-inline p-2 text-primary">
                             <i class="fas fa-pen"></i>
                         </a>
                         <form method="post" action="/shop/${shop.getId()}/token/list" class="d-inline p-2">
                             <input type="hidden" name="delete" value="${token.getId()}" />
                             <input type="hidden" name="_csrf" value="${_csrf.token}" />
                             <button type="submit" onclick="return confirm('Are you sure?')" class="btn text-danger"> <i class="fas fa-trash"></i></button>
-<#--                            <button onclick="return confirm('Are you sure?')" class="btn btn-danger" title="Delete this shop">del</button>-->
                         </form>
                     </td>
                 </tr>

@@ -2,6 +2,7 @@ package com.github.silexrr.yandex_market_api.shop.service;
 
 import com.github.silexrr.yandex_market_api.auth.model.User;
 import com.github.silexrr.yandex_market_api.shop.model.Shop;
+import com.github.silexrr.yandex_market_api.shop.model.Token;
 import com.github.silexrr.yandex_market_api.shop.repository.ShopRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -57,5 +59,29 @@ public class ShopServiceImpl implements ShopService{
         }
         User user = (User)authentication.getPrincipal();
         return userHasAccess(shop, user);
+    }
+
+    @Override
+    public Token findTokenById(Shop shop, String tokenId) {
+        List<Token> tokens = shop.getTokens();
+        for (Token token:
+             tokens) {
+
+            if(token.getId().equals(tokenId)) {
+                return token;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public boolean removeToken(Shop shop, Token token) {
+        List<Token> tokens = shop.getTokens();
+        if (tokens.contains(token)) {
+            tokens.remove(token);
+            shop.setTokens(tokens);
+            return true;
+        }
+        return false;
     }
 }

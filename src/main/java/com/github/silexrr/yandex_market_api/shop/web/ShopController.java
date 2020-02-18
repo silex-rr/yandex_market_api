@@ -49,7 +49,10 @@ public class ShopController {
 
     @PostMapping("/list")
     public String shopDelete( @RequestParam(value = "delete") Shop shop) {
-        if (shop != null) {
+        User principal = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (shop != null
+            && shop.getUserOwners().contains(principal)
+        ) {
             shopService.delete(shop);
         }
         return "redirect:/shop/list";
