@@ -13,6 +13,7 @@ public class Token {
     private String name;
     private String oauthToken;
     private String oauthClientId;
+    private String password;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date expireTo;
     private TokenType type;
@@ -23,6 +24,7 @@ public class Token {
         this.id = UUID.randomUUID().toString();
         this.name = "";
         this.oauthClientId = "";
+        this.password = "";
         this.oauthToken = "";
         this.expireTo = new Date();
         this.type = TokenType.BEARER;
@@ -42,6 +44,14 @@ public class Token {
 
     public void setOauthClientId(String oauthClientId) {
         this.oauthClientId = oauthClientId;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public boolean isEnable() {

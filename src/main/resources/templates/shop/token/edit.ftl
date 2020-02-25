@@ -72,6 +72,24 @@
             </div>
         </div>
 
+        <@spring.bind 'token.password' />
+        <div class="form-group row <#if spring.status.error>has-error</#if>">
+            <label class="col-sm-2 col-form-label">Password</label>
+            <div class="col-sm-6">
+                <input type="password"
+                       name="${spring.status.expression}"
+                       value="${spring.status.value}"
+                       class="form-control"
+                       placeholder="password"
+                />
+                <#if spring.status.error>
+                    <ul class="text-danger">
+                        <#list spring.status.error as error><li>${error}</li></#list>
+                    </ul>
+                </#if>
+            </div>
+        </div>
+
         <@spring.bind 'token.expireTo' />
         <div class="form-group row <#if spring.status.error>has-error</#if>">
             <label class="col-sm-2 col-form-label">Expire to</label>

@@ -19,8 +19,9 @@ public class TokenValidator implements Validator {
 
     @Override
     public void validate(Object o, Errors errors) {
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "oauthToken", "NotEmpty");
+//        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "oauthToken", "NotEmpty");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "oauthClientId", "NotEmpty");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "NotEmpty");
 
 //        Token token = (Token) o;
 //

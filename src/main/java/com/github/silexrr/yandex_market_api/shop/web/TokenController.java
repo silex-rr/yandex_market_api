@@ -7,6 +7,9 @@ import com.github.silexrr.yandex_market_api.shop.service.ShopService;
 import com.github.silexrr.yandex_market_api.shop.service.TokenService;
 
 import com.github.silexrr.yandex_market_api.shop.service.TokenValidator;
+import com.github.silexrr.yandex_market_api.yandexApi.method.base.Campaigns;
+import com.github.silexrr.yandex_market_api.yandexApi.request.model.Request;
+import com.github.silexrr.yandex_market_api.yandexApi.request.service.RequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -98,7 +101,7 @@ public class TokenController {
 //            token = new Token();
 ////            return "redirect:/shop/" + shop.getId() + "/token/list";
 //        }
-        System.out.println(token.getId());
+//        System.out.println(token.getId());
         tokenValidator.validate(token, bindingResult);
 
         if (bindingResult.hasErrors()) {
@@ -129,6 +132,15 @@ public class TokenController {
         if (token == null) {
             return "redirect:/shop/" + shop.getId() + "/token/list";
         }
+
+
+        Request request = new Request();
+        request.setShop(shop);
+        request.setToken(token);
+        Campaigns campaigns = new Campaigns(request);
+        RequestService requestService = new RequestService();
+        String send = requestService.send(campaigns);
+        System.out.println(send);
 
         model.addAttribute("token", token);
         model.addAttribute("shop", shop);
