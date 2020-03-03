@@ -8,8 +8,10 @@ import com.github.silexrr.yandex_market_api.shop.service.TokenService;
 
 import com.github.silexrr.yandex_market_api.shop.service.TokenValidator;
 import com.github.silexrr.yandex_market_api.yandexApi.method.base.Campaigns;
+import com.github.silexrr.yandex_market_api.yandexApi.model.Response;
 import com.github.silexrr.yandex_market_api.yandexApi.request.model.Request;
 import com.github.silexrr.yandex_market_api.yandexApi.request.service.RequestService;
+import com.github.silexrr.yandex_market_api.yandexApi.service.ResponseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 @Controller
 @RequestMapping(value = "/shop/{shop}/token")
@@ -35,6 +38,8 @@ public class TokenController {
     private TokenValidator tokenValidator;
     @Autowired
     private ShopService shopService;
+    @Autowired
+    private ResponseService responseService;
 
 
     @GetMapping("/list")
@@ -133,14 +138,19 @@ public class TokenController {
             return "redirect:/shop/" + shop.getId() + "/token/list";
         }
 
+        UUID uuid = UUID.randomUUID();
 
-        Request request = new Request();
+        Request request = new Request(uuid.toString());
         request.setShop(shop);
         request.setToken(token);
         Campaigns campaigns = new Campaigns(request);
         RequestService requestService = new RequestService();
-        String send = requestService.send(campaigns);
-        System.out.println(send);
+        String response = requestService.send(campaigns);
+
+        Response response1 = new Response(request, response, campaigns.getMethodName());
+        responseService.save(response1);
+
+        System.out.println(response);
 
         model.addAttribute("token", token);
         model.addAttribute("shop", shop);

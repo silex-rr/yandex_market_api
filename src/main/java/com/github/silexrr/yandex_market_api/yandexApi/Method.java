@@ -12,4 +12,13 @@ public abstract class Method {
     public Request getRequest() {
         return request;
     }
+
+    public final String getMethodName() {
+        Class<? extends Method> aClass = this.getClass();
+        String packageName = aClass.getPackage().getName();
+        String superPackageName = aClass.getSuperclass().getPackage().getName();
+        packageName = packageName.replace(superPackageName + ".method.", "");
+
+        return packageName + "." + aClass.getSimpleName();
+    }
 }

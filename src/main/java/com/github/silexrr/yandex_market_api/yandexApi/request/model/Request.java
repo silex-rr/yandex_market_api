@@ -2,11 +2,16 @@ package com.github.silexrr.yandex_market_api.yandexApi.request.model;
 
 import com.github.silexrr.yandex_market_api.shop.model.Shop;
 import com.github.silexrr.yandex_market_api.shop.model.Token;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.util.MultiValueMap;
+
+import javax.persistence.ElementCollection;
+import javax.persistence.FetchType;
 
 
 public class Request {
 
+    private String id;
     private RequestType type;
     private String version;
     private String url;
@@ -14,11 +19,16 @@ public class Request {
     private String resource;
     private RequestResponseFormat requestResponseFormat;
     private MultiValueMap parameters;
+    @DBRef
+    @ElementCollection(targetClass = Shop.class, fetch = FetchType.LAZY)
     private Shop shop;
+    @DBRef
+    @ElementCollection(targetClass = Token.class, fetch = FetchType.LAZY)
     private Token token;
 
 
-    public Request() {
+    public Request(String id) {
+        this.id = id;
         this.version = "2";
         this.requestResponseFormat = RequestResponseFormat.JSON;
         this.url = "https://api.partner.market.yandex.ru";
@@ -26,6 +36,14 @@ public class Request {
 
     public RequestType getType() {
         return type;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public void setType(RequestType type) {
