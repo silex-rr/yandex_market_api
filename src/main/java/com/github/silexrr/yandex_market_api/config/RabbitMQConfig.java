@@ -1,12 +1,14 @@
 package com.github.silexrr.yandex_market_api.config;
 
-import com.github.silexrr.yandex_market_api.api.service.RequestRestMessageListener;
+//import com.github.silexrr.yandex_market_api.api.service.RequestRestMessageListener;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.core.RabbitAdmin;
+//import org.springframework.amqp.rabbit.core.RabbitTemplate;
+//import org.springframework.amqp.rabbit.listener.MessageListenerContainer;
+//import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.amqp.rabbit.listener.MessageListenerContainer;
-import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,6 +39,15 @@ public class RabbitMQConfig {
     @Value("${rabbitmq.request.deadQueue}")
     private String deadQueueName;
 
+    @Bean
+    public AmqpAdmin amqpAdmin() {
+        return new RabbitAdmin(connectionFactory());
+    }
+
+    @Bean
+    public RabbitTemplate rabbitTemplate() {
+        return new RabbitTemplate(connectionFactory());
+    }
 
     @Bean
     public Queue queue() {
@@ -71,25 +82,56 @@ public class RabbitMQConfig {
         return cachingConnectionFactory;
     }
 
-    @Bean
-    public MessageListenerContainer messageListenerContainer() {
-        SimpleMessageListenerContainer simpleMessageListenerContainer = new SimpleMessageListenerContainer();
-        simpleMessageListenerContainer.setConnectionFactory(this.connectionFactory());
-        simpleMessageListenerContainer.setQueues(this.queue());
-        simpleMessageListenerContainer.setMessageListener(new RequestRestMessageListener());
-        return simpleMessageListenerContainer;
-    }
+//    @Bean
+//    public MessageListenerContainer messageListenerContainer() {
+//        SimpleMessageListenerContainer simpleMessageListenerContainer = new SimpleMessageListenerContainer();
+//        simpleMessageListenerContainer.setConnectionFactory(this.connectionFactory());
+//        simpleMessageListenerContainer.setQueues(this.queue());
+//        simpleMessageListenerContainer.setMessageListener(new RequestRestMessageListener());
+//        return simpleMessageListenerContainer;
+//    }
 
-    @Bean
-    public MessageConverter jsonMessageConverter() {
-        return new Jackson2JsonMessageConverter();
-    }
+//    @Bean
+//    public MessageConverter jsonMessageConverter() {
+//        return new Jackson2JsonMessageConverter();
+//    }
 
 
-    @Bean
-    public AmqpTemplate rabbitTemplateCustom(ConnectionFactory connectionFactory) {
-        final RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
-        rabbitTemplate.setMessageConverter(jsonMessageConverter());
-        return rabbitTemplate;
-    }
+//    @Bean
+//    public AmqpTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
+//        final RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
+//        rabbitTemplate.setMessageConverter(jsonMessageConverter());
+//        return rabbitTemplate;
+//    }
 }
+
+
+//
+//
+//@Configuration
+//public class RabbitConfiguration {
+//
+//    @Bean
+//    public ConnectionFactory connectionFactory() {
+//        CachingConnectionFactory connectionFactory =
+//                new CachingConnectionFactory("localhost");
+//        connectionFactory.setUsername("guest");
+//        connectionFactory.setPassword("guest");
+//        return connectionFactory;
+//    }
+//
+//    @Bean
+//    public AmqpAdmin amqpAdmin() {
+//        return new RabbitAdmin(connectionFactory());
+//    }
+//
+//    @Bean
+//    public RabbitTemplate rabbitTemplate() {
+//        return new RabbitTemplate(connectionFactory());
+//    }
+//
+//    @Bean
+//    public Queue myQueue1() {
+//        return new Queue("queue1");
+//    }
+//}
