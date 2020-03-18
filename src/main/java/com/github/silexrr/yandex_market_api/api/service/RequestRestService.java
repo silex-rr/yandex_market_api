@@ -2,8 +2,6 @@ package com.github.silexrr.yandex_market_api.api.service;
 
 import com.github.silexrr.yandex_market_api.api.model.Request;
 import org.springframework.amqp.core.AmqpTemplate;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -14,7 +12,7 @@ public class RequestRestService {
 //    @Autowired
 //    private AmqpTemplate rabbitTemplateCustom;
     @Autowired
-    AmqpTemplate template;
+    AmqpTemplate rabbitTemplateCustom;
 
     @Value("${rabbitmq.request.exchange}")
     private String exchange;
@@ -25,8 +23,7 @@ public class RequestRestService {
     public void add(Request request) {
 
         System.out.println("Send msg=" + request);
-        template.convertAndSend(exchange, routingKey, "Message");
-//        template.convertAndSend(exchange, routingKey, request);
-
+//        template.convertAndSend(exchange, routingKey, "Message");
+        rabbitTemplateCustom.convertAndSend(exchange, routingKey, request);
     }
 }
