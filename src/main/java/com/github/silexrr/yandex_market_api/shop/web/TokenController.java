@@ -138,19 +138,19 @@ public class TokenController {
             return "redirect:/shop/" + shop.getId() + "/token/list";
         }
 
-        UUID uuid = UUID.randomUUID();
+//        UUID uuid = UUID.randomUUID();
 
-        Request request = new Request(uuid.toString());
-        request.setShop(shop);
-        request.setToken(token);
-        Campaigns campaigns = new Campaigns(request);
-        RequestService requestService = new RequestService();
-        String response = requestService.send(campaigns);
-
-        Response response1 = new Response(request, response, campaigns.getMethodName());
-        responseService.save(response1);
-
-        System.out.println(response);
+//        Request request = new Request(uuid.toString());
+//        request.setShop(shop);
+//        request.setToken(token);
+//        Campaigns campaigns = new Campaigns(request);
+//        RequestService requestService = new RequestService();
+//        String response = requestService.send(campaigns);
+//
+//        Response response1 = new Response(request, response, campaigns.getMethodName());
+//        responseService.save(response1);
+//
+//        System.out.println(response);
 
         model.addAttribute("token", token);
         model.addAttribute("shop", shop);

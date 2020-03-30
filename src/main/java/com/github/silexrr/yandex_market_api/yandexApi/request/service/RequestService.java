@@ -15,6 +15,7 @@ public class RequestService {
 
     public String send(Method method)
     {
+        method.execute();
         Request request = method.getRequest();
         WebClient webClient = WebClient.create();
         HttpMethod type = HttpMethod.GET;

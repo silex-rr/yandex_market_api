@@ -5,8 +5,12 @@ import com.github.silexrr.yandex_market_api.yandexApi.request.model.Request;
 import com.github.silexrr.yandex_market_api.yandexApi.request.model.RequestType;
 
 public class Campaigns extends Method {
-    public Campaigns(Request request) {
-        super(request);
+    @Override
+    public void execute() {
+        if (request == null) {
+            return;
+        }
+
         String uri = "v"
                 + request.getVersion()
                 + "/campaigns."
@@ -14,4 +18,5 @@ public class Campaigns extends Method {
         this.getRequest().setUrn(uri);
         this.getRequest().setType(RequestType.GET);
     }
+
 }

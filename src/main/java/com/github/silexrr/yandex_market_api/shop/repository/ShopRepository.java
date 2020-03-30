@@ -17,6 +17,8 @@ public interface ShopRepository extends MongoRepository<Shop, String> {
 
     public List<Shop> findByUserOwnersContains(User user);
 
+    public List<Shop> findAllByEnable(boolean enable);
+
     public void deleteById(UUID uuid);
 
     @Query("{'token.oauthToken': ?0}")

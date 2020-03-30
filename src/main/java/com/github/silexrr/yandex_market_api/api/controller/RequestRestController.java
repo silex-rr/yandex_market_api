@@ -19,11 +19,13 @@ public class RequestRestController {
     @GetMapping(value = "/add")
     public String add(
             @RequestParam("method") String method,
-            @RequestParam("param") String param
+            @RequestParam("param") String param,
+            @RequestParam("shop") String shop
     ) {
         Request request = new Request();
         request.setId(UUID.randomUUID().toString());
         request.setMethod(method);
+        request.setShop(shop);
         request.setParam(param);
         requestRestService.add(request);
         return "Added_ID=" + request.getId();

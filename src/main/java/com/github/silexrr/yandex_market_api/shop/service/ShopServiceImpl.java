@@ -5,6 +5,8 @@ import com.github.silexrr.yandex_market_api.shop.model.Shop;
 import com.github.silexrr.yandex_market_api.shop.model.Token;
 import com.github.silexrr.yandex_market_api.shop.repository.ShopRepository;
 
+import com.github.silexrr.yandex_market_api.yandexApi.method.base.Campaigns;
+import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,6 +20,9 @@ public class ShopServiceImpl implements ShopService{
 
     @Autowired
     private ShopRepository shopRepository;
+
+    @Autowired
+    private RabbitAdmin rabbitAdmin;
 
     @Override
     public void save(Shop shop) {
@@ -83,5 +88,25 @@ public class ShopServiceImpl implements ShopService{
             return true;
         }
         return false;
+    }
+
+    @Override
+    public List<Shop> getEnable(boolean enable) {
+        return shopRepository.findAllByEnable(enable);
+    }
+
+    @Override
+    public void activateMqListeners()
+    {
+        System.out.println("Activate MQ Listeners");
+        getEnable(true).forEach(shop -> {
+            Campaigns campaigns = new Campaigns();
+            ShopMQListener.addListener(
+                    shop,
+                    campaigns,
+                    true,
+                    rabbitAdmin
+            );
+        });
     }
 }

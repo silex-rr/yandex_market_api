@@ -20,9 +20,9 @@
 
         <@spring.bind 'token.name' />
         <div class="form-group row <#if spring.status.error>has-error</#if>">
-            <label class="col-sm-2 col-form-label">Name</label>
+            <label class="col-sm-2 col-form-label" for="token.name">Name</label>
             <div class="col-sm-6">
-                <input type="text"
+                <input id="token.name" type="text"
                     name="${spring.status.expression}"
                     value="${spring.status.value}"
                     class="form-control"
@@ -38,9 +38,9 @@
 
         <@spring.bind 'token.oauthToken' />
         <div class="form-group row <#if spring.status.error>has-error</#if>">
-            <label class="col-sm-2 col-form-label">Oauth Token</label>
+            <label class="col-sm-2 col-form-label" for="token.oauthToken">Oauth Token</label>
             <div class="col-sm-6">
-                <input type="text"
+                <input id="token.oauthToken" type="text"
                        name="${spring.status.expression}"
                        value="${spring.status.value}"
                        class="form-control"
@@ -56,9 +56,9 @@
 
         <@spring.bind 'token.oauthClientId' />
         <div class="form-group row <#if spring.status.error>has-error</#if>">
-            <label class="col-sm-2 col-form-label">Oauth Client Id</label>
+            <label class="col-sm-2 col-form-label" for="token.oauthClientId">Oauth Client Id</label>
             <div class="col-sm-6">
-                <input type="text"
+                <input id="token.oauthClientId" type="text"
                        name="${spring.status.expression}"
                        value="${spring.status.value}"
                        class="form-control"
@@ -74,9 +74,9 @@
 
         <@spring.bind 'token.password' />
         <div class="form-group row <#if spring.status.error>has-error</#if>">
-            <label class="col-sm-2 col-form-label">Password</label>
+            <label class="col-sm-2 col-form-label" for="token.password">Password</label>
             <div class="col-sm-6">
-                <input type="password"
+                <input id="token.password" type="password"
                        name="${spring.status.expression}"
                        value="${spring.status.value}"
                        class="form-control"
@@ -92,9 +92,9 @@
 
         <@spring.bind 'token.expireTo' />
         <div class="form-group row <#if spring.status.error>has-error</#if>">
-            <label class="col-sm-2 col-form-label">Expire to</label>
+            <label class="col-sm-2 col-form-label" for="token.expireTo">Expire to</label>
             <div class="col-sm-6">
-                <input type="date"
+                <input id="token.expireTo" type="date"
                        placeholder="YYYY-MM-DD"
                        name="${spring.status.expression}"
                        value="${spring.status.value}"
@@ -103,6 +103,22 @@
                 <#if spring.status.error>
                     <ul class="text-danger">
                         <#list spring.status.error as error><li>${error}</li></#list>
+                    </ul>
+                </#if>
+            </div>
+        </div>
+
+        <@spring.bind 'token.enable'/>
+        <div class="form-group row <#if spring.status.error>has-error</#if>">
+            <label class="col-sm-2 col-form-name" for="token.enable">Enable:</label>
+            <div class="col-sm-6">
+                <input id="token.enable" type="checkbox" name="${spring.status.expression}"
+                       <#if spring.status.value?? && spring.status.value?string=="true">checked="true"</#if>
+                       class="form-control"
+                />
+                <#if spring.status.error>
+                    <ul class="text-danger">
+                        <#list spring.status.errorMessages as error> <li>${error}</li> </#list>
                     </ul>
                 </#if>
             </div>

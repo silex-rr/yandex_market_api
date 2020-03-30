@@ -1,22 +1,18 @@
 package com.github.silexrr.yandex_market_api.config;
 
-//import com.github.silexrr.yandex_market_api.api.service.RequestRestMessageListener;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
-//import org.springframework.amqp.rabbit.core.RabbitTemplate;
-//import org.springframework.amqp.rabbit.listener.MessageListenerContainer;
-//import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
+import org.springframework.amqp.rabbit.listener.AbstractMessageListenerContainer;
+import org.springframework.amqp.rabbit.listener.MessageListenerContainer;
+import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.messaging.converter.MappingJackson2MessageConverter;
-import org.springframework.messaging.handler.annotation.support.DefaultMessageHandlerMethodFactory;
 
 @Configuration
 public class RabbitMQConfig {
@@ -45,6 +41,11 @@ public class RabbitMQConfig {
     }
 
     @Bean
+    public RabbitAdmin rabbitAdmin() {
+        return new RabbitAdmin(connectionFactory());
+    }
+
+    @Bean
     public Queue queue() {
         return new Queue(queueName, false);
     }
@@ -68,5 +69,35 @@ public class RabbitMQConfig {
         rabbitTemplate.setMessageConverter(jsonMessageConverter());
         return rabbitTemplate;
     }
+
+	@Bean
+    public MessageListenerContainer messageListenerContainer() {
+        SimpleMessageListenerContainer simpleMessageListenerContainer = new SimpleMessageListenerContainer();
+        simpleMessageListenerContainer.setConnectionFactory(connectionFactory());
+        simpleMessageListenerContainer.setQueues(queue());
+//        simpleMessageListenerContainer.setMessageListener(new RabbitMQListner());
+        return simpleMessageListenerContainer;
+    }
+
+
+    public static AbstractMessageListenerContainer startListening(
+            RabbitAdmin rabbitAdmin,
+            Queue queue,
+            Exchange exchange,
+            String key,
+            MessageListener messageListener
+    ) {
+        rabbitAdmin.declareBinding(
+                BindingBuilder.bind(queue).to(exchange).with(key).noargs()
+        );
+        SimpleMessageListenerContainer listener
+                = new SimpleMessageListenerContainer(rabbitAdmin.getRabbitTemplate().getConnectionFactory());
+        listener.addQueues(queue);
+        listener.setMessageListener(messageListener);
+        listener.start();
+
+        return listener;
+    }
+
 
 }

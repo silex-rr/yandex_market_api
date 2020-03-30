@@ -21,9 +21,9 @@
 
         <@spring.bind 'shop.name'/>
         <div class="form-group row <#if spring.status.error>has-error</#if>">
-            <label class="col-sm-2 col-form-name">Name:</label>
+            <label class="col-sm-2 col-form-name" for="shop.name">Name:</label>
             <div class="col-sm-6">
-                <input type="text" name="${spring.status.expression}" value="${spring.status.value?html}"
+                <input id="shop.name" type="text" name="${spring.status.expression}" value="${spring.status.value?html}"
                        class="form-control"
                        placeholder="name"
                 />
@@ -37,9 +37,9 @@
 
         <@spring.bind 'shop.ymLogin'/>
         <div class="form-group row <#if spring.status.error>has-error</#if>">
-            <label class="col-sm-2 col-form-name">Yandex Market Login:</label>
+            <label class="col-sm-2 col-form-name" for="shop.ymLogin">Yandex Market Login:</label>
             <div class="col-sm-6">
-                <input type="text" name="${spring.status.expression}" value="${spring.status.value?html}"
+                <input id="shop.ymLogin" type="text" name="${spring.status.expression}" value="${spring.status.value?html}"
                        class="form-control"
                        placeholder="YM Login"
                 />
@@ -53,9 +53,9 @@
 
         <@spring.bind 'shop.ymCompanyId'/>
         <div class="form-group row <#if spring.status.error>has-error</#if>">
-            <label class="col-sm-2 col-form-name">YM Company ID:</label>
+            <label class="col-sm-2 col-form-name" for="shop.ymCompanyId">YM Company ID:</label>
             <div class="col-sm-6">
-                <input type="number" name="${spring.status.expression}"
+                <input id="shop.ymCompanyId" type="number" name="${spring.status.expression}"
                        value="${spring.status.value?html}"
                        class="form-control"
                        placeholder="Yandex Market Company ID"
@@ -70,12 +70,28 @@
 
         <@spring.bind 'shop.ymRegionId'/>
         <div class="form-group row <#if spring.status.error>has-error</#if>">
-            <label class="col-sm-2 col-form-name">YM Region ID:</label>
+            <label class="col-sm-2 col-form-name" for="shop.ymRegionId">YM Region ID:</label>
             <div class="col-sm-6">
-                <input type="number" name="${spring.status.expression}"
+                <input id="shop.ymRegionId" type="number" name="${spring.status.expression}"
                        value="${spring.status.value?html}"
                        class="form-control"
                        placeholder="Yandex Market Region ID"
+                />
+                <#if spring.status.error>
+                    <ul class="text-danger">
+                        <#list spring.status.errorMessages as error> <li>${error}</li> </#list>
+                    </ul>
+                </#if>
+            </div>
+        </div>
+
+        <@spring.bind 'shop.enable'/>
+        <div class="form-group row <#if spring.status.error>has-error</#if>">
+            <label class="col-sm-2 col-form-name" for="shop.enable">Enable:</label>
+            <div class="col-sm-6">
+                <input id="shop.enable" type="checkbox" name="${spring.status.expression}"
+                       <#if spring.status.value?? && spring.status.value?string=="true">checked="true"</#if>
+                       class="form-control"
                 />
                 <#if spring.status.error>
                     <ul class="text-danger">

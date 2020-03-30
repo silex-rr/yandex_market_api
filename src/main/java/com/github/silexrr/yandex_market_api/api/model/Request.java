@@ -10,6 +10,7 @@ public class Request implements Serializable {
 
     private String id;
     private String method;
+    private String shop;
     private String param;
     private Date date;
 
@@ -44,6 +45,14 @@ public class Request implements Serializable {
         this.param = param;
     }
 
+    public String getShop() {
+        return shop;
+    }
+
+    public void setShop(String shop) {
+        this.shop = shop;
+    }
+
     public Date getDate() {
         return date;
     }
@@ -57,6 +66,7 @@ public class Request implements Serializable {
         return "Request{" +
                 "id='" + id + '\'' +
                 ", method='" + method + '\'' +
+                ", shop='" + shop + '\'' +
                 ", param='" + param + '\'' +
                 ", date=" + date +
                 '}';

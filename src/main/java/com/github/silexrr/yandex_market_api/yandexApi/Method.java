@@ -3,12 +3,11 @@ package com.github.silexrr.yandex_market_api.yandexApi;
 import com.github.silexrr.yandex_market_api.yandexApi.request.model.Request;
 
 public abstract class Method {
-    private final Request request;
+    protected Request request;
 
-    public Method(Request request) {
+    public void setRequest(Request request) {
         this.request = request;
     }
-
     public Request getRequest() {
         return request;
     }
@@ -21,4 +20,6 @@ public abstract class Method {
 
         return packageName + "." + aClass.getSimpleName();
     }
+
+    public abstract void execute();
 }
