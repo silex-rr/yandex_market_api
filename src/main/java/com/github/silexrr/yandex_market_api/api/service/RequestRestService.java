@@ -36,8 +36,10 @@ public class RequestRestService {
     @Value("${rabbitmq.request.exchange}")
     private String exchange;
 
-    @Value("${rabbitmq.request.routingKey}")
-    private String routingKey;
+    @Value("${rabbitmq.request.commonRoutingKey}")
+    private String commonRoutingKey;
+    @Value("${rabbitmq.request.privetRoutingKeyBase}")
+    private String privateRoutingKeyBase;
 
     public void add(Request request) {
 
@@ -47,14 +49,14 @@ public class RequestRestService {
 //        Map map = parseParams(request.getParam());
 //        System.out.println(map);
 
-        String key = request.getMethod();
+        String key = commonRoutingKey;
 
         String shop = request.getShop();
         if (shop != "") {
-            key += '.' + shop;
+            key = privateRoutingKeyBase + '.' + shop;
         }
-
-        rabbitTemplateCustom.convertAndSend(exchange, key, request.getParam());
+        System.out.println("Send msg=" + request.getParam() + " for exchange " + exchange + " whit key " + key);
+        rabbitTemplateCustom.convertAndSend(exchange, key, request);
 
 //        rabbitTemplateCustom.convertAndSend(exchange, routingKey, request);
     }

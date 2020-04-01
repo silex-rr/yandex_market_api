@@ -1,11 +1,11 @@
 package com.github.silexrr.yandex_market_api.yandexApi.request.model;
 
-public enum RequestResponseFormat {
+public enum QueryResponseFormat {
     XML ("xml"), JSON ("json");
 
     private final String name;
 
-    RequestResponseFormat (String name) {
+    QueryResponseFormat(String name) {
         this.name = name;
     }
 

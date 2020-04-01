@@ -2,24 +2,22 @@ package com.github.silexrr.yandex_market_api.yandexApi.request.service;
 
 import com.github.silexrr.yandex_market_api.shop.model.Token;
 import com.github.silexrr.yandex_market_api.yandexApi.Method;
-import com.github.silexrr.yandex_market_api.yandexApi.request.model.Request;
+import com.github.silexrr.yandex_market_api.yandexApi.request.model.Query;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-import reactor.core.publisher.Mono;
 
 public class RequestService {
 
     public String send(Method method)
     {
         method.execute();
-        Request request = method.getRequest();
+        Query query = method.getQuery();
         WebClient webClient = WebClient.create();
         HttpMethod type = HttpMethod.GET;
-        switch (request.getType()) {
+        switch (query.getType()) {
             case GET:
                 type = HttpMethod.GET;
                 break;
@@ -33,8 +31,8 @@ public class RequestService {
                 type = HttpMethod.DELETE;
                 break;
         }
-        String uri = this.makeURI(request);
-        Token token = request.getToken();
+        String uri = this.makeURI(query);
+        Token token = query.getToken();
 
         String OAuthString = "OAuth oauth_token=\"" + token.getOauthToken()
                 + "\", oauth_client_id=\"" + token.getOauthClientId() + "\"";
@@ -62,9 +60,9 @@ public class RequestService {
         return block;
     }
 
-    public String makeURI(Request request)
+    public String makeURI(Query query)
     {
-        return request.getUrl() + '/' + request.getUrn();
+        return query.getUrl() + '/' + query.getUrn();
     }
 }
 //Authorization: OAuth oauth_token="авторизационный_токен", oauth_client_id="идентификатор_приложения"

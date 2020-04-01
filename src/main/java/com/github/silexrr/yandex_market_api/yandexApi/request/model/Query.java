@@ -9,15 +9,15 @@ import javax.persistence.ElementCollection;
 import javax.persistence.FetchType;
 
 
-public class Request {
+public class Query {
 
     private String id;
-    private RequestType type;
+    private QueryType type;
     private String version;
     private String url;
     private String urn;
     private String resource;
-    private RequestResponseFormat requestResponseFormat;
+    private QueryResponseFormat queryResponseFormat;
     private MultiValueMap parameters;
     @DBRef
     @ElementCollection(targetClass = Shop.class, fetch = FetchType.LAZY)
@@ -27,14 +27,14 @@ public class Request {
     private Token token;
 
 
-    public Request(String id) {
+    public Query(String id) {
         this.id = id;
         this.version = "2";
-        this.requestResponseFormat = RequestResponseFormat.JSON;
+        this.queryResponseFormat = QueryResponseFormat.JSON;
         this.url = "https://api.partner.market.yandex.ru";
     }
 
-    public RequestType getType() {
+    public QueryType getType() {
         return type;
     }
 
@@ -46,7 +46,7 @@ public class Request {
         this.id = id;
     }
 
-    public void setType(RequestType type) {
+    public void setType(QueryType type) {
         this.type = type;
     }
 
@@ -66,12 +66,12 @@ public class Request {
         this.resource = resource;
     }
 
-    public RequestResponseFormat getRequestResponseFormat() {
-        return requestResponseFormat;
+    public QueryResponseFormat getQueryResponseFormat() {
+        return queryResponseFormat;
     }
 
-    public void setRequestResponseFormat(RequestResponseFormat requestResponseFormat) {
-        this.requestResponseFormat = requestResponseFormat;
+    public void setQueryResponseFormat(QueryResponseFormat queryResponseFormat) {
+        this.queryResponseFormat = queryResponseFormat;
     }
 
     public MultiValueMap getParameters() {
@@ -121,7 +121,7 @@ public class Request {
                 ", version=" + version +
                 ", url='" + url + '\'' +
                 ", resource='" + resource + '\'' +
-                ", requestResponseFormat=" + requestResponseFormat +
+                ", requestResponseFormat=" + queryResponseFormat +
                 ", parameters=" + parameters +
                 ", shop=" + shop +
                 ", token=" + token +

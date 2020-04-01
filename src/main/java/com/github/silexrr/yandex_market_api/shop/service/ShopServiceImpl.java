@@ -1,6 +1,7 @@
 package com.github.silexrr.yandex_market_api.shop.service;
 
 import com.github.silexrr.yandex_market_api.auth.model.User;
+import com.github.silexrr.yandex_market_api.config.RabbitMQConfig;
 import com.github.silexrr.yandex_market_api.shop.model.Shop;
 import com.github.silexrr.yandex_market_api.shop.model.Token;
 import com.github.silexrr.yandex_market_api.shop.repository.ShopRepository;
@@ -23,6 +24,9 @@ public class ShopServiceImpl implements ShopService{
 
     @Autowired
     private RabbitAdmin rabbitAdmin;
+
+    @Autowired
+    private RabbitMQConfig rabbitMQConfig;
 
     @Override
     public void save(Shop shop) {
@@ -100,12 +104,9 @@ public class ShopServiceImpl implements ShopService{
     {
         System.out.println("Activate MQ Listeners");
         getEnable(true).forEach(shop -> {
-            Campaigns campaigns = new Campaigns();
             ShopMQListener.addListener(
                     shop,
-                    campaigns,
-                    true,
-                    rabbitAdmin
+                    rabbitMQConfig
             );
         });
     }

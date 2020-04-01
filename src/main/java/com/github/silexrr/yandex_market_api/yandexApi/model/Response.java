@@ -1,6 +1,6 @@
 package com.github.silexrr.yandex_market_api.yandexApi.model;
 
-import com.github.silexrr.yandex_market_api.yandexApi.request.model.Request;
+import com.github.silexrr.yandex_market_api.yandexApi.request.model.Query;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.Entity;
@@ -15,11 +15,11 @@ public class Response {
     private String id;
     private String method;
     private Date date;
-    private Request request;
+    private Query query;
     private String response;
 
-    public Response(Request request, String response, String method) {
-        this.request = request;
+    public Response(Query query, String response, String method) {
+        this.query = query;
         this.response = response;
         this.method = method;
         this.date = new Date();
@@ -33,12 +33,12 @@ public class Response {
         this.id = id;
     }
 
-    public Request getRequest() {
-        return request;
+    public Query getQuery() {
+        return query;
     }
 
-    public void setRequest(Request request) {
-        this.request = request;
+    public void setQuery(Query query) {
+        this.query = query;
     }
 
     public String getResponse() {
@@ -69,7 +69,7 @@ public class Response {
     public String toString() {
         return "Response{" +
                 "id='" + id + '\'' +
-                ", request=" + request +
+                ", request=" + query +
                 ", response='" + response + '\'' +
                 ", method='" + method + '\'' +
                 ", date=" + date +

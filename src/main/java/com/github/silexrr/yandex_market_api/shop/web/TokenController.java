@@ -7,10 +7,6 @@ import com.github.silexrr.yandex_market_api.shop.service.ShopService;
 import com.github.silexrr.yandex_market_api.shop.service.TokenService;
 
 import com.github.silexrr.yandex_market_api.shop.service.TokenValidator;
-import com.github.silexrr.yandex_market_api.yandexApi.method.base.Campaigns;
-import com.github.silexrr.yandex_market_api.yandexApi.model.Response;
-import com.github.silexrr.yandex_market_api.yandexApi.request.model.Request;
-import com.github.silexrr.yandex_market_api.yandexApi.request.service.RequestService;
 import com.github.silexrr.yandex_market_api.yandexApi.service.ResponseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -23,8 +19,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
 
 @Controller
 @RequestMapping(value = "/shop/{shop}/token")

@@ -1,19 +1,20 @@
 package com.github.silexrr.yandex_market_api.shop.service;
 
-import com.github.silexrr.yandex_market_api.shop.model.Token;
-import com.github.silexrr.yandex_market_api.yandexApi.method.base.Campaigns;
-import com.github.silexrr.yandex_market_api.yandexApi.model.Response;
-import com.github.silexrr.yandex_market_api.yandexApi.request.model.Request;
+import com.github.silexrr.yandex_market_api.api.model.Request;
+import com.github.silexrr.yandex_market_api.config.RabbitMQConfig;
 import com.github.silexrr.yandex_market_api.shop.model.Shop;
-import com.github.silexrr.yandex_market_api.yandexApi.Method;
+import com.github.silexrr.yandex_market_api.shop.model.Token;
+import com.github.silexrr.yandex_market_api.yandexApi.request.model.Query;
 import com.github.silexrr.yandex_market_api.yandexApi.request.service.RequestService;
-import com.github.silexrr.yandex_market_api.yandexApi.service.ResponseService;
-import com.github.silexrr.yandex_market_api.yandexApi.service.ResponseServiceImpl;
 import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.listener.AbstractMessageListenerContainer;
+import org.springframework.amqp.support.converter.MessageConverter;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 
 import static com.github.silexrr.yandex_market_api.config.RabbitMQConfig.startListening;
 
@@ -21,24 +22,33 @@ public class ShopMQListener {
 
     static private HashMap<String, ArrayList<ShopMQListener>> shopMqListeners = new HashMap<String, ArrayList<ShopMQListener>>();
 
-    private AbstractMessageListenerContainer container;
-    private String key;
+    private AbstractMessageListenerContainer containerCommon;
+    private AbstractMessageListenerContainer containerPrivate;
+    private String exchange;
+    static private String commonKey;
+    private String privetKeyBase;
+    private String privetKey;
+    private RabbitAdmin rabbitAdmin;
+    private MessageConverter messageConverter;
 
-//    @Autowired
-//    private RabbitAdmin rabbitAdmin;
-
-    private ShopMQListener (Shop shop, Method method, String key, RabbitAdmin rabbitAdmin) {
-        String methodName = method.getMethodName();
-        System.out.println("Add listener " + key + " for shop " + shop.getName() + "(" + shop.getId() + ")");
-        this.key = key;
-        container = startListening(
+    private ShopMQListener (Shop shop, RabbitMQConfig rabbitMQConfig) {
+        rabbitAdmin = rabbitMQConfig.rabbitAdmin();
+        exchange = rabbitMQConfig.getExchange();
+        commonKey = rabbitMQConfig.getCommonRoutingKey();
+        privetKeyBase = rabbitMQConfig.getPrivetRoutingKeyBase();
+        messageConverter = rabbitMQConfig.jsonMessageConverter();
+        System.out.println("Add listeners for shop " + shop.getName() + "(" + shop.getId() + ")");
+        this.privetKey = privetKeyBase + "." + shop.getId();
+        System.out.println("Add one for exchange " + exchange + " with key " + commonKey);
+        containerCommon = startListening(
                 rabbitAdmin,
                 rabbitAdmin.declareQueue(),
-                new DirectExchange("request.exchange"),
-                this.key,
+                new DirectExchange(exchange),
+                commonKey,
                 message -> {
+                    Request request = (Request)messageConverter.fromMessage(message);
                     UUID uuid = UUID.randomUUID();
-                    Request request = new Request(uuid.toString());
+                    Query query = new Query(uuid.toString());
                     List<Token> tokens = shop.getTokens();
                     Token tokenSelected = null;
                     for(int i = tokens.size(); i-- > 0;) {
@@ -53,14 +63,51 @@ public class ShopMQListener {
                         System.out.println("This shop don't have any enable tokens");
                         return;
                     }
-                    request.setShop(shop);
-                    request.setToken(tokenSelected);
+                    query.setShop(shop);
+                    query.setToken(tokenSelected);
 //                    System.out.println(request);
-                    method.setRequest(request);
+//                    method.setRequest(request);
                     RequestService requestService = new RequestService();
-                    System.out.println(method);
-                    String response = requestService.send(method);
-                    System.out.println(response);
+//                    System.out.println(method);
+//                    String response = requestService.send(method);
+                    System.out.println("Got common request for method" + request.getMethod() + " with params " + request.getParam());
+//                    Response response1 = new Response(request, response, method.getMethodName());
+//                    ResponseServiceImpl responseService = new ResponseServiceImpl();
+//                    responseService.save(response1);
+
+//                    System.out.println(new String(message.getBody()));
+                });
+        containerPrivate = startListening(
+                rabbitAdmin,
+                rabbitAdmin.declareQueue(),
+                new DirectExchange(exchange),
+                privetKey,
+                message -> {
+                    Request request = (Request)messageConverter.fromMessage(message);
+                    UUID uuid = UUID.randomUUID();
+                    Query query = new Query(uuid.toString());
+                    List<Token> tokens = shop.getTokens();
+                    Token tokenSelected = null;
+                    for(int i = tokens.size(); i-- > 0;) {
+                        Token token = tokens.get(i);
+                        System.out.println(token);
+                        if (token.isEnable()) {
+                            tokenSelected = token;
+                            break;
+                        }
+                    }
+                    if (tokenSelected == null) {
+                        System.out.println("This shop don't have any enable tokens");
+                        return;
+                    }
+                    query.setShop(shop);
+                    query.setToken(tokenSelected);
+//                    System.out.println(request);
+//                    method.setRequest(request);
+                    RequestService requestService = new RequestService();
+//                    System.out.println(method);
+//                    String response = requestService.send(method);
+                    System.out.println("Got privet request for method" + request.getMethod() + " with params " + request.getParam());
 //                    Response response1 = new Response(request, response, method.getMethodName());
 //                    ResponseServiceImpl responseService = new ResponseServiceImpl();
 //                    responseService.save(response1);
@@ -72,28 +119,18 @@ public class ShopMQListener {
         shopListeners.add(this);
     }
 
-    public static void addListener(Shop shop, Method method, Boolean chainedToShop, RabbitAdmin rabbitAdmin ) {
-        String key = makeKey(method, shop, chainedToShop);
-        ShopMQListener listener = getListener(shop, key);
+    public static void addListener(Shop shop, RabbitMQConfig rabbitMQConfig ) {
+        ShopMQListener listener = getListener(shop);
         if (listener == null) {
-            new ShopMQListener(shop, method, key, rabbitAdmin);
+            new ShopMQListener(shop, rabbitMQConfig);
         }
     }
 
-    public static String makeKey(Method method, Shop shop, Boolean chainedToShop) {
-        String methodName = method.getMethodName();
-        String key = methodName;
-        if (chainedToShop) {
-            key += '.' + shop.getId();
-        }
-        return key;
-    }
-
-    public static ShopMQListener getListener(Shop shop, String key) {
+    public static ShopMQListener getListener(Shop shop) {
         ArrayList<ShopMQListener> shopListeners = getShopListeners(shop);
         for (int i = shopListeners.size(); --i >= 0;) {
             ShopMQListener shopMQListener = shopListeners.get(i);
-            if (shopMQListener.getKey() == key) {
+            if (shopMQListener.getCommonKey() == commonKey) {
                 return shopMQListener;
             }
         }
@@ -110,15 +147,19 @@ public class ShopMQListener {
         return shopMqListeners.get(id);
     }
 
-    public AbstractMessageListenerContainer getContainer() {
-        return container;
+    public AbstractMessageListenerContainer getContainerCommon() {
+        return containerCommon;
     }
 
-    public void setContainer(AbstractMessageListenerContainer container) {
-        this.container = container;
+    public AbstractMessageListenerContainer getContainerPrivate() {
+        return containerPrivate;
     }
 
-    public String getKey() {
-        return key;
+    public String getCommonKey() {
+        return commonKey;
+    }
+
+    public String getPrivetKey() {
+        return privetKey;
     }
 }

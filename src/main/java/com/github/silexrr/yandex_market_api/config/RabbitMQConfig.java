@@ -32,8 +32,11 @@ public class RabbitMQConfig {
     @Value("${rabbitmq.request.exchange}")
     private String exchange;
 
-    @Value("${rabbitmq.request.routingKey}")
-    private String routingKey;
+    @Value("${rabbitmq.request.commonRoutingKey}")
+    private String commonRoutingKey;
+
+    @Value("${rabbitmq.request.privetRoutingKeyBase}")
+    private String privetRoutingKeyBase;
 
     @Bean
     public AmqpAdmin amqpAdmin() {
@@ -97,6 +100,22 @@ public class RabbitMQConfig {
         listener.start();
 
         return listener;
+    }
+
+    public String getQueueName() {
+        return queueName;
+    }
+
+    public String getExchange() {
+        return exchange;
+    }
+
+    public String getCommonRoutingKey() {
+        return commonRoutingKey;
+    }
+
+    public String getPrivetRoutingKeyBase() {
+        return privetRoutingKeyBase;
     }
 
 
