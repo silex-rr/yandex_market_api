@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.List;
+
 @Configuration
 public class RabbitMQConfig {
 
@@ -87,12 +89,14 @@ public class RabbitMQConfig {
             RabbitAdmin rabbitAdmin,
             Queue queue,
             Exchange exchange,
-            String key,
+            List<String> keys,
             MessageListener messageListener
     ) {
-        rabbitAdmin.declareBinding(
-                BindingBuilder.bind(queue).to(exchange).with(key).noargs()
-        );
+        keys.forEach(key -> {
+            rabbitAdmin.declareBinding(
+                    BindingBuilder.bind(queue).to(exchange).with(key).noargs()
+            );
+        });
         SimpleMessageListenerContainer listener
                 = new SimpleMessageListenerContainer(rabbitAdmin.getRabbitTemplate().getConnectionFactory());
         listener.addQueues(queue);

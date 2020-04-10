@@ -7,6 +7,7 @@ import org.springframework.util.MultiValueMap;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.FetchType;
+import java.util.Map;
 
 
 public class Query {
@@ -18,7 +19,7 @@ public class Query {
     private String urn;
     private String resource;
     private QueryResponseFormat queryResponseFormat;
-    private MultiValueMap parameters;
+    private Map parameters;
     @DBRef
     @ElementCollection(targetClass = Shop.class, fetch = FetchType.LAZY)
     private Shop shop;
@@ -74,11 +75,11 @@ public class Query {
         this.queryResponseFormat = queryResponseFormat;
     }
 
-    public MultiValueMap getParameters() {
+    public Map getParameters() {
         return parameters;
     }
 
-    public void setParameters(MultiValueMap parameters) {
+    public void setParameters(Map parameters) {
         this.parameters = parameters;
     }
 
@@ -116,12 +117,14 @@ public class Query {
 
     @Override
     public String toString() {
-        return "Request{" +
-                "type=" + type +
-                ", version=" + version +
+        return "Query{" +
+                "id='" + id + '\'' +
+                ", type=" + type +
+                ", version='" + version + '\'' +
                 ", url='" + url + '\'' +
+                ", urn='" + urn + '\'' +
                 ", resource='" + resource + '\'' +
-                ", requestResponseFormat=" + queryResponseFormat +
+                ", queryResponseFormat=" + queryResponseFormat +
                 ", parameters=" + parameters +
                 ", shop=" + shop +
                 ", token=" + token +
