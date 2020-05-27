@@ -14,6 +14,7 @@
                 <input type="text" name="${spring.status.expression}" value="${spring.status.value?html}"
                        class="form-control"
                        placeholder="login"
+                       autofocus="autofocus"
                 />
                 <#if spring.status.error>
                     <ul class="text-danger">

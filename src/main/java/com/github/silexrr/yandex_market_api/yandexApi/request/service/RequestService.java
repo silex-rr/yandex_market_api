@@ -1,6 +1,6 @@
 package com.github.silexrr.yandex_market_api.yandexApi.request.service;
 
-import com.github.silexrr.yandex_market_api.shop.model.Token;
+import com.github.silexrr.yandex_market_api.shop.model.YMToken;
 import com.github.silexrr.yandex_market_api.yandexApi.Method;
 import com.github.silexrr.yandex_market_api.yandexApi.request.model.Query;
 import org.springframework.http.HttpHeaders;
@@ -32,10 +32,10 @@ public class RequestService {
                 break;
         }
         String uri = this.makeURI(query);
-        Token token = query.getToken();
+        YMToken YMToken = query.getYMToken();
 
-        String OAuthString = "OAuth oauth_token=\"" + token.getOauthToken()
-                + "\", oauth_client_id=\"" + token.getOauthClientId() + "\"";
+        String OAuthString = "OAuth oauth_token=\"" + YMToken.getOauthToken()
+                + "\", oauth_client_id=\"" + YMToken.getOauthClientId() + "\"";
 
         String block = "";
         try {

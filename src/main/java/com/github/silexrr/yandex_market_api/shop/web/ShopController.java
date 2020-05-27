@@ -1,6 +1,7 @@
 package com.github.silexrr.yandex_market_api.shop.web;
 
 import com.github.silexrr.yandex_market_api.auth.model.User;
+import com.github.silexrr.yandex_market_api.auth.web.JwtTokenUtil;
 import com.github.silexrr.yandex_market_api.shop.model.Shop;
 import com.github.silexrr.yandex_market_api.shop.repository.ShopRepository;
 import com.github.silexrr.yandex_market_api.shop.service.ShopService;
@@ -13,10 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 @RequestMapping(value = "/shop")
@@ -28,6 +26,8 @@ public class ShopController {
     private ShopService shopService;
     @Autowired
     private ShopValidator shopValidator;
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
 
     @GetMapping("/list")
     public String list(Model model) {
@@ -64,6 +64,7 @@ public class ShopController {
             @PathVariable(value = "shop") Shop shop
     ) {
         model.addAttribute("shop", shop);
+
         return "shop/edit";
     }
 

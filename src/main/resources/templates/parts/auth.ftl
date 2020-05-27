@@ -6,6 +6,7 @@
             <label class="col-sm-2 col-form-label">User Name:</label>
             <div class="col-sm-6">
                 <input class="form-control" type="text" name="username"
+                    autofocus="autofocus"
                     placeholder="user name"
                 />
             </div>

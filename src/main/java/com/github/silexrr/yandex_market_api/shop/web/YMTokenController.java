@@ -2,11 +2,11 @@ package com.github.silexrr.yandex_market_api.shop.web;
 
 import com.github.silexrr.yandex_market_api.auth.model.User;
 import com.github.silexrr.yandex_market_api.shop.model.Shop;
-import com.github.silexrr.yandex_market_api.shop.model.Token;
+import com.github.silexrr.yandex_market_api.shop.model.YMToken;
 import com.github.silexrr.yandex_market_api.shop.service.ShopService;
-import com.github.silexrr.yandex_market_api.shop.service.TokenService;
+import com.github.silexrr.yandex_market_api.shop.service.YMTokenService;
 
-import com.github.silexrr.yandex_market_api.shop.service.TokenValidator;
+import com.github.silexrr.yandex_market_api.shop.service.YMTokenValidator;
 import com.github.silexrr.yandex_market_api.yandexApi.service.ResponseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -21,15 +21,15 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-@RequestMapping(value = "/shop/{shop}/token")
-public class TokenController {
+@RequestMapping(value = "/shop/{shop}/YMToken")
+public class YMTokenController {
 
 //    @Autowired
 //    private TokenRepository tokenRepository;
     @Autowired
-    private TokenService tokenService;
+    private YMTokenService tokenService;
     @Autowired
-    private TokenValidator tokenValidator;
+    private YMTokenValidator tokenValidator;
     @Autowired
     private ShopService shopService;
     @Autowired
@@ -42,7 +42,7 @@ public class TokenController {
             @PathVariable(value = "shop") Shop shop
     ) {
         model.put("shop", shop);
-        return "/shop/token/list";
+        return "/shop/YMToken/list";
     }
 
     @PostMapping("/list")
@@ -54,14 +54,14 @@ public class TokenController {
         if (shop != null
             && shopService.userHasAccess(shop, principal)
         ) {
-            Token token = shopService.findTokenById(shop, tokenId);
-            if (token != null) {
-                if (shopService.removeToken(shop, token)) {
+            YMToken YMToken = shopService.findTokenById(shop, tokenId);
+            if (YMToken != null) {
+                if (shopService.removeToken(shop, YMToken)) {
                     shopService.save(shop);
                 }
             }
         }
-        return "redirect:/shop/" + shop.getId() + "/token/list";
+        return "redirect:/shop/" + shop.getId() + "/YMToken/list";
     }
 
     @GetMapping("/edit/new")
@@ -79,15 +79,15 @@ public class TokenController {
         }
         model.addAttribute("shop", shop);
         model.addAttribute("isNew", true);
-        model.addAttribute("token", new Token());
-        return "/shop/token/edit";
+        model.addAttribute("YMToken", new YMToken());
+        return "/shop/YMToken/edit";
     }
 
-    @PostMapping("/edit/{token}")
+    @PostMapping("/edit/{YMToken}")
     public String edit(
             @PathVariable(value = "shop") Shop shop,
-            @PathVariable(value = "token") String tokenId,
-            @ModelAttribute(value = "token") Token token,
+            @PathVariable(value = "YMToken") String tokenId,
+            @ModelAttribute(value = "YMToken") YMToken YMToken,
             BindingResult bindingResult
     ){
 
@@ -101,35 +101,35 @@ public class TokenController {
 ////            return "redirect:/shop/" + shop.getId() + "/token/list";
 //        }
 //        System.out.println(token.getId());
-        tokenValidator.validate(token, bindingResult);
+        tokenValidator.validate(YMToken, bindingResult);
 
         if (bindingResult.hasErrors()) {
-            return "/shop/token/edit";
+            return "/shop/YMToken/edit";
         }
-        List<Token> tokens = shop.getTokens();
-        Token tokenExist = shopService.findTokenById(shop, tokenId);
-        if (tokenExist != null) {
-            tokens.remove(tokenExist);
-            token.setId(tokenId);
+        List<YMToken> YMTokens = shop.getYMTokens();
+        YMToken YMTokenExist = shopService.findTokenById(shop, tokenId);
+        if (YMTokenExist != null) {
+            YMTokens.remove(YMTokenExist);
+            YMToken.setId(tokenId);
         }
-        tokens.add(token);
-        shop.setTokens(tokens);
+        YMTokens.add(YMToken);
+        shop.setYMTokens(YMTokens);
         shopService.save(shop);
 
         //tokenService.save(token);
 
-        return "redirect:/shop/" + shop.getId() + "/token/edit/" + token.getId();
+        return "redirect:/shop/" + shop.getId() + "/YMToken/edit/" + YMToken.getId();
     }
 
-    @GetMapping("/edit/{token}")
+    @GetMapping("/edit/{YMToken}")
     public String show(
             Model model,
             @PathVariable(value = "shop") Shop shop,
-            @PathVariable(value = "token") String tokenId
+            @PathVariable(value = "YMToken") String YMTokenId
     ) {
-        Token token = shopService.findTokenById(shop, tokenId);
-        if (token == null) {
-            return "redirect:/shop/" + shop.getId() + "/token/list";
+        YMToken YMToken = shopService.findTokenById(shop, YMTokenId);
+        if (YMToken == null) {
+            return "redirect:/shop/" + shop.getId() + "/YMToken/list";
         }
 
 //        UUID uuid = UUID.randomUUID();
@@ -145,10 +145,10 @@ public class TokenController {
 //        responseService.save(response1);
 //
 //        System.out.println(response);
-
-        model.addAttribute("token", token);
+//        System.out.println(YMToken.toString());
+        model.addAttribute("YMToken", YMToken);
         model.addAttribute("shop", shop);
-        return "/shop/token/edit";
+        return "/shop/YMToken/edit";
     }
 
 }

@@ -1,27 +1,27 @@
 package com.github.silexrr.yandex_market_api.shop.service;
 
-import com.github.silexrr.yandex_market_api.shop.model.Token;
+import com.github.silexrr.yandex_market_api.shop.model.YMToken;
 import org.springframework.stereotype.Service;
 
 @Service
-public class TokenServiceImpl implements TokenService {
+public class YMTokenServiceImpl implements YMTokenService {
     @Override
-    public void save(Token token) {
+    public void save(YMToken YMToken) {
 
     }
 
     @Override
-    public void delete(Token token) {
+    public void delete(YMToken YMToken) {
 
     }
 
     @Override
-    public Token findByOauthToken(String oauthToken) {
+    public YMToken findByOauthToken(String oauthToken) {
         return null;
     }
 
     @Override
-    public Token findByOauthClientId(String oauthClientId) {
+    public YMToken findByOauthClientId(String oauthClientId) {
         return null;
     }
 

@@ -6,10 +6,12 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface ShopRepository extends MongoRepository<Shop, String> {
     public Shop findById(UUID uuid);
+    public Optional<Shop> findById(String id);
 
     public Shop findByName(String name);
 

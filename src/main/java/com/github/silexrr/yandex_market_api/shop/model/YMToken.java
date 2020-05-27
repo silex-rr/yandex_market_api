@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.UUID;
 
 @Entity
-public class Token {
+public class YMToken {
 
     private String id;
     private String name;
@@ -16,18 +16,18 @@ public class Token {
     private String password;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date expireTo;
-    private TokenType type;
+    private YMTokenType type;
 
     private boolean enable;
 
-    public Token() {
+    public YMToken() {
         this.id = UUID.randomUUID().toString();
         this.name = "";
         this.oauthClientId = "";
         this.password = "";
         this.oauthToken = "";
         this.expireTo = new Date();
-        this.type = TokenType.BEARER;
+        this.type = YMTokenType.BEARER;
     }
 
     public String getOauthToken() {
@@ -86,16 +86,16 @@ public class Token {
         this.expireTo = expireTo;
     }
 
-    public TokenType getType() {
+    public YMTokenType getType() {
         return type;
     }
 
-    public void setType(TokenType type) {
+    public void setType(YMTokenType type) {
         this.type = type;
     }
 
     public void setType(String type) {
-        this.setType(TokenType.valueOf(type));
+        this.setType(YMTokenType.valueOf(type));
     }
 
     @Override

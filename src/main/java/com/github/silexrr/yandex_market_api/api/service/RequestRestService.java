@@ -76,18 +76,10 @@ public class RequestRestService {
 
 
 
-    public void ping()
-    {
-        System.out.println("pong");
-
-//        ConfigurableApplicationContext ctx = SpringApplication.run(YandexMarketApiApplication.class, args);
-
-
-//        AbstractMessageListenerContainer container = startListening(rabbitAdmin, rabbitAdmin.declareQueue(),
-//                new DirectExchange("amq.direct"), "testRoute", message -> {
-//                    System.out.println(new String(message.getBody()));
-//                });
-    }
+//    public void ping()
+//    {
+//        System.out.println("pong");
+//    }
 
     public Map parseParams(String param)
     {

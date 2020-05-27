@@ -1,9 +1,8 @@
 package com.github.silexrr.yandex_market_api.yandexApi.request.model;
 
 import com.github.silexrr.yandex_market_api.shop.model.Shop;
-import com.github.silexrr.yandex_market_api.shop.model.Token;
+import com.github.silexrr.yandex_market_api.shop.model.YMToken;
 import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.util.MultiValueMap;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.FetchType;
@@ -24,8 +23,8 @@ public class Query {
     @ElementCollection(targetClass = Shop.class, fetch = FetchType.LAZY)
     private Shop shop;
     @DBRef
-    @ElementCollection(targetClass = Token.class, fetch = FetchType.LAZY)
-    private Token token;
+    @ElementCollection(targetClass = YMToken.class, fetch = FetchType.LAZY)
+    private YMToken YMToken;
 
 
     public Query(String id) {
@@ -107,12 +106,12 @@ public class Query {
         this.shop = shop;
     }
 
-    public Token getToken() {
-        return token;
+    public YMToken getYMToken() {
+        return YMToken;
     }
 
-    public void setToken(Token token) {
-        this.token = token;
+    public void setYMToken(YMToken YMToken) {
+        this.YMToken = YMToken;
     }
 
     @Override
@@ -127,7 +126,7 @@ public class Query {
                 ", queryResponseFormat=" + queryResponseFormat +
                 ", parameters=" + parameters +
                 ", shop=" + shop +
-                ", token=" + token +
+                ", token=" + YMToken +
                 '}';
     }
 }

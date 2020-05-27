@@ -9,7 +9,7 @@
             <th scope="col">Enable</th>
             <th scope="col">YM Company ID</th>
             <th scope="col">YM Region ID</th>
-            <th scope="col">Tokens</th>
+            <th scope="col">YM Tokens</th>
             <th scope="col">Actions</th>
         </thead>
         <tbody>
@@ -26,9 +26,10 @@
                     <td>${shop.getYmCompanyId()}</td>
                     <td>${shop.getYmRegionId()}</td>
                     <td>
-                        <a href="/shop/${shop.getId()}/token/list">
-                            <#if shopsTokenCount[shop.getId()]??>
-                                ${shopsTokenCount[shop.getId()]}
+
+                        <a href="/shop/${shop.getId()}/YMToken/list">
+                            <#if shop.getYMTokens()??>
+                                ${shop.getYMTokens()?size}
                             <#else >
                                 0
                             </#if>

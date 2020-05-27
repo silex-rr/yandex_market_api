@@ -1,8 +1,11 @@
 package com.github.silexrr.yandex_market_api.auth.web;
 
+import com.github.silexrr.yandex_market_api.auth.model.User;
+import com.github.silexrr.yandex_market_api.auth.service.UserDetailsServiceImpl;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,6 +16,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -20,9 +24,8 @@ import java.io.IOException;
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
 
-    @Qualifier("userDetailsServiceImpl")
     @Autowired
-    private UserDetailsService userDetailsService;
+    private UserDetailsServiceImpl userDetailsService;
 
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
@@ -37,13 +40,13 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             return;
         }
 
-        String username = null;
+        String userId = null;
         String jwtToken = null;
 
         if (requestTokenHeader.startsWith("Bearer ")) {
             jwtToken = requestTokenHeader.substring(7);
             try {
-                 username = jwtTokenUtil.getUserNameFromToken(jwtToken);
+                 userId = jwtTokenUtil.getUserIdFromToken(jwtToken);
             } catch (IllegalArgumentException e) {
                 System.out.println("Unable to get JWT Token");
             } catch (ExpiredJwtException e) {
@@ -53,21 +56,30 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             logger.warn("JWT Token does not begin with Bearer String" + requestTokenHeader);
         }
 
-        if (username != null
+        if (userId != null
             && SecurityContextHolder.getContext().getAuthentication() == null
         ) {
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+            User user = this.userDetailsService.loadUserById(userId);
 
-            if (jwtTokenUtil.validateToken(jwtToken, userDetails)) {
+//            StringBuilder error = new StringBuilder();
+
+            if (jwtTokenUtil.validateToken(
+                    jwtToken
+                    , user
+//                    , error
+            )) {
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken
                         = new UsernamePasswordAuthenticationToken(
-                            userDetails,
+                        user,
                         null,
-                            userDetails.getAuthorities()
+                        user.getAuthorities()
                 );
                 usernamePasswordAuthenticationToken.setDetails(
                         new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+            } else {
+//                response.sendError(HttpServletResponse.SC_FORBIDDEN, error.toString());
+//                return;
             }
         }
         filterChain.doFilter(request, response);

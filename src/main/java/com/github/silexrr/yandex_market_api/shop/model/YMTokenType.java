@@ -1,11 +1,11 @@
 package com.github.silexrr.yandex_market_api.shop.model;
 
-public enum TokenType {
+public enum YMTokenType {
     BEARER ("Bearer");
 
     private final String name;
 
-    TokenType(String name) {
+    YMTokenType(String name) {
         this.name = name;
     }
 

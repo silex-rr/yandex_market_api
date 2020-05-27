@@ -8,4 +8,5 @@ import java.util.Optional;
 public interface ResponseRepository extends MongoRepository<Response, String> {
     @Override
     public Optional<Response> findById(String s);
+    public Optional<Response> findByRequestId(String requestId);
 }

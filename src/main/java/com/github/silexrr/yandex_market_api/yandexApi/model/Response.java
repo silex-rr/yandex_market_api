@@ -13,16 +13,20 @@ public class Response {
 
     @Id
     private String id;
+    private String requestId;
     private String method;
     private Date date;
     private Query query;
     private String response;
+    private boolean delivered;
 
-    public Response(Query query, String response, String method) {
+    public Response(Query query, String response, String method, String requestId) {
         this.query = query;
         this.response = response;
         this.method = method;
+        this.requestId = requestId;
         this.date = new Date();
+        this.delivered = false;
     }
 
     public String getId() {
@@ -65,14 +69,32 @@ public class Response {
         this.method = method;
     }
 
+    public boolean isDelivered() {
+        return delivered;
+    }
+
+    public void setDelivered(boolean delivered) {
+        this.delivered = delivered;
+    }
+
+    public String getRequestId() {
+        return requestId;
+    }
+
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
+    }
+
     @Override
     public String toString() {
         return "Response{" +
                 "id='" + id + '\'' +
-                ", request=" + query +
-                ", response='" + response + '\'' +
+                ", requestId='" + requestId + '\'' +
                 ", method='" + method + '\'' +
                 ", date=" + date +
+                ", query=" + query +
+                ", response='" + response + '\'' +
+                ", delivered=" + delivered +
                 '}';
     }
 

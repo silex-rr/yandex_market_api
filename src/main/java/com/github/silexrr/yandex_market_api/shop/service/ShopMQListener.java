@@ -1,19 +1,23 @@
 package com.github.silexrr.yandex_market_api.shop.service;
 
 import com.github.silexrr.yandex_market_api.api.model.Request;
+import com.github.silexrr.yandex_market_api.auth.service.SecurityServiceImpl;
 import com.github.silexrr.yandex_market_api.config.RabbitMQConfig;
 import com.github.silexrr.yandex_market_api.shop.model.Shop;
-import com.github.silexrr.yandex_market_api.shop.model.Token;
+import com.github.silexrr.yandex_market_api.shop.model.YMToken;
 import com.github.silexrr.yandex_market_api.yandexApi.Method;
 import com.github.silexrr.yandex_market_api.yandexApi.model.Response;
 import com.github.silexrr.yandex_market_api.yandexApi.request.model.Query;
 import com.github.silexrr.yandex_market_api.yandexApi.request.service.RequestService;
+import com.github.silexrr.yandex_market_api.yandexApi.service.ResponseService;
 import com.github.silexrr.yandex_market_api.yandexApi.service.ResponseServiceImpl;
-import jdk.nashorn.api.tree.ImportEntryTree;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.listener.AbstractMessageListenerContainer;
 import org.springframework.amqp.support.converter.MessageConverter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.json.JsonParseException;
 import org.springframework.boot.json.JsonParser;
 import org.springframework.boot.json.JsonParserFactory;
@@ -31,21 +35,22 @@ public class ShopMQListener {
     private AbstractMessageListenerContainer containerCommon;
     private AbstractMessageListenerContainer containerPrivate;
     private String exchange;
-    static private String commonKey;
+    private static String commonKey;
+    private static final Logger logger = LoggerFactory.getLogger(SecurityServiceImpl.class);
     private String privetKeyBase;
     private String privetKey;
     private RabbitAdmin rabbitAdmin;
     private MessageConverter messageConverter;
 
-    private ShopMQListener (Shop shop, RabbitMQConfig rabbitMQConfig) {
+    private ShopMQListener (Shop shop, RabbitMQConfig rabbitMQConfig, ResponseService responseService) {
         rabbitAdmin = rabbitMQConfig.rabbitAdmin();
         exchange = rabbitMQConfig.getExchange();
         commonKey = rabbitMQConfig.getCommonRoutingKey();
         privetKeyBase = rabbitMQConfig.getPrivetRoutingKeyBase();
         messageConverter = rabbitMQConfig.jsonMessageConverter();
-        System.out.println("Add listeners for shop " + shop.getName() + "(" + shop.getId() + ")");
+        logger.info("Add MQ listener for shop " + shop.getName() + "(" + shop.getId() + ")");
         this.privetKey = privetKeyBase + "." + shop.getId();
-        System.out.println("Add one for exchange " + exchange + " with key " + commonKey);
+//        System.out.println("Add one for exchange " + exchange + " with key " + commonKey);
         ArrayList<String> keys = new ArrayList<>();
         keys.add(commonKey);
         keys.add(privetKey);
@@ -66,22 +71,22 @@ public class ShopMQListener {
                     }
                     query.setParameters(stringObjectMap);
                     System.out.println(query);
-                    List<Token> tokens = shop.getTokens();
-                    Token tokenSelected = null;
-                    for(int i = tokens.size(); i-- > 0;) {
-                        Token token = tokens.get(i);
-                        System.out.println(token);
-                        if (token.isEnable()) {
-                            tokenSelected = token;
+                    List<YMToken> YMTokens = shop.getYMTokens();
+                    YMToken YMTokenSelected = null;
+                    for(int i = YMTokens.size(); i-- > 0;) {
+                        YMToken YMToken = YMTokens.get(i);
+                        System.out.println(YMToken);
+                        if (YMToken.isEnable()) {
+                            YMTokenSelected = YMToken;
                             break;
                         }
                     }
-                    if (tokenSelected == null) {
-                        System.out.println("This shop don't have any enable tokens");
+                    if (YMTokenSelected == null) {
+                        System.out.println("This shop don't have any enabled tokens");
                         return;
                     }
                     query.setShop(shop);
-                    query.setToken(tokenSelected);
+                    query.setYMToken(YMTokenSelected);
 //                    System.out.println(request);
 //                    method.setRequest(request);
                     RequestService requestService = new RequestService();
@@ -103,10 +108,11 @@ public class ShopMQListener {
 
                         method.setQuery(query);
 
-                        String response = requestService.send(method);
+                        String YMResponse = requestService.send(method);
 
-                        Response response1 = new Response(query, response, method.getMethodName());
-                        System.out.println("Response: " + response1.getResponse());
+                        Response response = new Response(query, YMResponse, method.getMethodName(), request.getId());
+                        responseService.save(response);
+                        System.out.println("Response: " + response.getResponse());
 
 //                        ResponseServiceImpl responseService = new ResponseServiceImpl();
 //                        responseService.save(response1);
@@ -128,10 +134,10 @@ public class ShopMQListener {
         shopListeners.add(this);
     }
 
-    public static void addListener(Shop shop, RabbitMQConfig rabbitMQConfig ) {
+    public static void addListener(Shop shop, RabbitMQConfig rabbitMQConfig, ResponseService responseService ) {
         ShopMQListener listener = getListener(shop);
         if (listener == null) {
-            new ShopMQListener(shop, rabbitMQConfig);
+            new ShopMQListener(shop, rabbitMQConfig, responseService);
         }
     }
 

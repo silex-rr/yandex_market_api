@@ -31,7 +31,7 @@ public class YandexMarketApiApplication extends SpringBootServletInitializer {
 	public static void main(String[] args) {
 		ConfigurableApplicationContext context = SpringApplication.run(YandexMarketApiApplication.class, args);
 		RequestRestService requestRestService = context.getBean(RequestRestService.class);
-		requestRestService.ping();
+//		requestRestService.ping();
 		ShopService shopService = context.getBean(ShopService.class);
 		shopService.activateMqListeners();
 	}

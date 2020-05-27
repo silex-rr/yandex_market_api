@@ -26,4 +26,9 @@ public class ResponseServiceImpl implements ResponseService {
     public Optional<Response> findById(String id) {
         return responseRepository.findById(id);
     }
+
+    @Override
+    public Optional<Response> findByRequestId(String requestId) {
+        return responseRepository.findByRequestId(requestId);
+    }
 }

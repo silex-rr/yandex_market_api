@@ -1,5 +1,6 @@
 package com.github.silexrr.yandex_market_api.shop.model;
 
+import com.github.silexrr.yandex_market_api.api.model.APIToken;
 import com.github.silexrr.yandex_market_api.auth.model.User;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -25,7 +26,7 @@ public class Shop {
     @DBRef
     private List<User> userOwners;
 
-    private List<Token> tokens;
+    private List<YMToken> YMTokens;
 
     public Shop() {
         this.name = "";
@@ -33,7 +34,7 @@ public class Shop {
         this.ymCompanyId = 0;
         this.ymRegionId = 0;
         this.userOwners = new ArrayList<User>();
-        this.tokens = new ArrayList<Token>();
+        this.YMTokens = new ArrayList<YMToken>();
     }
 
     public String getName() {
@@ -92,13 +93,14 @@ public class Shop {
         return id;
     }
 
-    public List<Token> getTokens() {
-        return tokens;
+    public List<YMToken> getYMTokens() {
+        return YMTokens;
     }
 
-    public void setTokens(List<Token> tokens) {
-        this.tokens = tokens;
+    public void setYMTokens(List<YMToken> YMTokens) {
+        this.YMTokens = YMTokens;
     }
+
 
     @Override
     public String toString() {
@@ -110,7 +112,7 @@ public class Shop {
                 ", ymRegionId=" + ymRegionId +
                 ", enable=" + enable +
                 ", userOwners=" + userOwners +
-                ", tokens=" + tokens +
+                ", YMTokens=" + YMTokens +
                 '}';
     }
 }

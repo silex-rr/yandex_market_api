@@ -1,20 +1,20 @@
 package com.github.silexrr.yandex_market_api.shop.service;
 
-import com.github.silexrr.yandex_market_api.shop.model.Token;
+import com.github.silexrr.yandex_market_api.shop.model.YMToken;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
 @Component
-public class TokenValidator implements Validator {
+public class YMTokenValidator implements Validator {
 
 //    @Autowired
 //    private TokenRepository tokenRepository;
 
     @Override
     public boolean supports(Class<?> aClass) {
-        return Token.class.equals(aClass);
+        return YMToken.class.equals(aClass);
     }
 
     @Override

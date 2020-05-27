@@ -8,4 +8,5 @@ public interface ResponseService {
     void save(Response response);
     void delete(Response response);
     Optional<Response> findById(String id);
+    Optional<Response> findByRequestId(String id);
 }
