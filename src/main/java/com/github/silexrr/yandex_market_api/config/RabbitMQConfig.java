@@ -114,6 +114,8 @@ public class RabbitMQConfig {
         return exchange;
     }
 
+
+
     public String getCommonRoutingKey() {
         return commonRoutingKey;
     }

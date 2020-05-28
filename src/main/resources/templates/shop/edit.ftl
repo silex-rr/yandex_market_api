@@ -85,6 +85,23 @@
             </div>
         </div>
 
+        <@spring.bind 'shop.requestsPerSecond'/>
+        <div class="form-group row <#if spring.status.error>has-error</#if>">
+            <label class="col-sm-2 col-form-name" for="shop.requestsPerSecond">YM Region ID:</label>
+            <div class="col-sm-6">
+                <input id="shop.requestsPerSecond" type="number" step="0.01" name="${spring.status.expression}"
+                       value="${spring.status.value?html}"
+                       class="form-control"
+                       placeholder="Yandex Market Region ID"
+                />
+                <#if spring.status.error>
+                    <ul class="text-danger">
+                        <#list spring.status.errorMessages as error> <li>${error}</li> </#list>
+                    </ul>
+                </#if>
+            </div>
+        </div>
+
         <@spring.bind 'shop.enable'/>
         <div class="form-group row <#if spring.status.error>has-error</#if>">
             <label class="col-sm-2 col-form-name" for="shop.enable">Enable:</label>

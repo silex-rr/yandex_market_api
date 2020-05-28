@@ -10,27 +10,32 @@ import com.github.silexrr.yandex_market_api.yandexApi.model.Response;
 import com.github.silexrr.yandex_market_api.yandexApi.request.model.Query;
 import com.github.silexrr.yandex_market_api.yandexApi.request.service.RequestService;
 import com.github.silexrr.yandex_market_api.yandexApi.service.ResponseService;
-import com.github.silexrr.yandex_market_api.yandexApi.service.ResponseServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.listener.AbstractMessageListenerContainer;
 import org.springframework.amqp.support.converter.MessageConverter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.json.JsonParseException;
 import org.springframework.boot.json.JsonParser;
 import org.springframework.boot.json.JsonParserFactory;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static com.github.silexrr.yandex_market_api.config.RabbitMQConfig.startListening;
 
 public class ShopMQListener {
 
     static private HashMap<String, ArrayList<ShopMQListener>> shopMqListeners = new HashMap<String, ArrayList<ShopMQListener>>();
+    static private HashMap<String, ArrayList<Queue>> shopQueue = new HashMap<>();
 
     private AbstractMessageListenerContainer containerCommon;
     private AbstractMessageListenerContainer containerPrivate;
@@ -42,7 +47,7 @@ public class ShopMQListener {
     private RabbitAdmin rabbitAdmin;
     private MessageConverter messageConverter;
 
-    private ShopMQListener (Shop shop, RabbitMQConfig rabbitMQConfig, ResponseService responseService) {
+    private ShopMQListener (Shop shop, RabbitMQConfig rabbitMQConfig, ResponseService responseService, ShopStatisticsService shopStatisticsService) {
         rabbitAdmin = rabbitMQConfig.rabbitAdmin();
         exchange = rabbitMQConfig.getExchange();
         commonKey = rabbitMQConfig.getCommonRoutingKey();
@@ -54,12 +59,29 @@ public class ShopMQListener {
         ArrayList<String> keys = new ArrayList<>();
         keys.add(commonKey);
         keys.add(privetKey);
+//        ApplicationContext applicationContext =
+//                new ClassPathXmlApplicationContext("./../../scopes.xml");
+        Queue queue = rabbitAdmin.declareQueue();
         containerCommon = startListening(
                 rabbitAdmin,
-                rabbitAdmin.declareQueue(),
+                queue,
                 new DirectExchange(exchange),
                 keys,
                 message -> {
+                    LocalDateTime lastRequestTime = shopStatisticsService.getLastRequestTime(shop);
+
+                    if (lastRequestTime != null) {
+                        System.out.println("Last Request was at "
+                                + lastRequestTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+                    }
+                    long millisecondsToNexRequest = shopStatisticsService.getMillisecondsToNexRequest(shop);
+//                    System.out.println("Milliseconds to next request left: " + millisecondsToNexRequest);
+                    try {
+                        Thread.sleep(millisecondsToNexRequest);
+                    } catch (InterruptedException e) {
+
+                    }
+                    shopStatisticsService.updateLastRequestTimeForShop(shop);
                     Request request = (Request)messageConverter.fromMessage(message);
                     Query query = new Query(request.getId());
                     JsonParser jsonParser = JsonParserFactory.getJsonParser();
@@ -70,7 +92,7 @@ public class ShopMQListener {
 
                     }
                     query.setParameters(stringObjectMap);
-                    System.out.println(query);
+//                    System.out.println(query);
                     List<YMToken> YMTokens = shop.getYMTokens();
                     YMToken YMTokenSelected = null;
                     for(int i = YMTokens.size(); i-- > 0;) {
@@ -92,7 +114,7 @@ public class ShopMQListener {
                     RequestService requestService = new RequestService();
 //                    System.out.println(method);
 //                    String response = requestService.send(method);
-                    System.out.println("Got common request for method " + request.getMethod() + " with params " + request.getParam());
+//                    System.out.println("Got common request for method " + request.getMethod() + " with params " + request.getParam());
                     String methodClassName = "com.github.silexrr.yandex_market_api.yandexApi.method." + request.getMethod();
                     try {
                         //<Magic>
@@ -132,12 +154,14 @@ public class ShopMQListener {
 //        container.addQueueNames(queueName);
         ArrayList<ShopMQListener> shopListeners = getShopListeners(shop);
         shopListeners.add(this);
+        ArrayList<Queue> shopQueue = getShopQueue(shop);
+        shopQueue.add(queue);
     }
 
-    public static void addListener(Shop shop, RabbitMQConfig rabbitMQConfig, ResponseService responseService ) {
+    public static void addListener(Shop shop, RabbitMQConfig rabbitMQConfig, ResponseService responseService, ShopStatisticsService shopStatisticsService ) {
         ShopMQListener listener = getListener(shop);
         if (listener == null) {
-            new ShopMQListener(shop, rabbitMQConfig, responseService);
+            new ShopMQListener(shop, rabbitMQConfig, responseService, shopStatisticsService);
         }
     }
 
@@ -160,6 +184,16 @@ public class ShopMQListener {
             shopMqListeners.put(id, shopMQListeners);
         }
         return shopMqListeners.get(id);
+    }
+
+    public static ArrayList<Queue> getShopQueue(Shop shop) {
+        String id = shop.getId();
+//        System.out.println(id);
+        if (shopQueue.containsKey(id) == false) {
+            ArrayList<Queue> shopQueues = new ArrayList<Queue>();
+            shopQueue.put(id, shopQueues);
+        }
+        return shopQueue.get(id);
     }
 
     public AbstractMessageListenerContainer getContainerCommon() {

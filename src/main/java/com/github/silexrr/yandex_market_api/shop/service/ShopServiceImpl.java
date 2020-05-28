@@ -35,6 +35,9 @@ public class ShopServiceImpl implements ShopService{
     @Autowired
     private ResponseService responseService;
 
+    @Autowired
+    private ShopStatisticsService shopStatisticsService;
+
     private static final Logger logger = LoggerFactory.getLogger(SecurityServiceImpl.class);
 
     @Override
@@ -120,7 +123,8 @@ public class ShopServiceImpl implements ShopService{
             ShopMQListener.addListener(
                     shop,
                     rabbitMQConfig,
-                    responseService
+                    responseService,
+                    shopStatisticsService
             );
         });
     }

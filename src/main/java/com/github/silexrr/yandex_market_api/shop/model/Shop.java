@@ -19,6 +19,7 @@ public class Shop {
     private String ymLogin;
     private Integer ymCompanyId;
     private Integer ymRegionId;
+    private Double requestsPerSecond;
     private boolean enable;
 
     @ElementCollection(targetClass = User.class, fetch = FetchType.LAZY)
@@ -33,6 +34,7 @@ public class Shop {
         this.ymLogin = "";
         this.ymCompanyId = 0;
         this.ymRegionId = 0;
+        this.requestsPerSecond = 2.0;
         this.userOwners = new ArrayList<User>();
         this.YMTokens = new ArrayList<YMToken>();
     }
@@ -101,6 +103,13 @@ public class Shop {
         this.YMTokens = YMTokens;
     }
 
+    public Double getRequestsPerSecond() {
+        return requestsPerSecond;
+    }
+
+    public void setRequestsPerSecond(Double requestsPerSecond) {
+        this.requestsPerSecond = requestsPerSecond;
+    }
 
     @Override
     public String toString() {
@@ -110,6 +119,7 @@ public class Shop {
                 ", ymLogin='" + ymLogin + '\'' +
                 ", ymCompanyId=" + ymCompanyId +
                 ", ymRegionId=" + ymRegionId +
+                ", requestsPerSecond=" + requestsPerSecond +
                 ", enable=" + enable +
                 ", userOwners=" + userOwners +
                 ", YMTokens=" + YMTokens +
