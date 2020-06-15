@@ -3,6 +3,9 @@ package com.github.silexrr.yandex_market_api.yandexApi.method.base;
 import com.github.silexrr.yandex_market_api.yandexApi.Method;
 import com.github.silexrr.yandex_market_api.yandexApi.request.model.QueryType;
 
+/**
+ * Request information about campaigns
+ */
 public class Campaigns extends Method {
     @Override
     public void execute() {

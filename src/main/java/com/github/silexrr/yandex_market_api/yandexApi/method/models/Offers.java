@@ -4,6 +4,15 @@ import com.github.silexrr.yandex_market_api.yandexApi.Method;
 import com.github.silexrr.yandex_market_api.yandexApi.request.model.QueryType;
 
 ///rest/request/add?method=models.Offers&shop=5e54db6cee0efe0494c8afa0&param=%7B%22modelId%22%3A7352155%7D
+
+/**
+ * Request information about goods offers
+ * https://yandex.ru/dev/market/partner/doc/dg/reference/get-models-id-offers-docpage/
+ *
+ * Params
+ *  orderByPrice [ASC, DESC] - Set the sorting direction
+ *  count [1, 30] - Set the number of returned offers
+ */
 public class Offers extends Method {
     private String orderByPrice;
     private Integer count;

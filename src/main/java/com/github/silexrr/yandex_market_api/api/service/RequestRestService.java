@@ -65,7 +65,9 @@ public class RequestRestService {
         String key = commonRoutingKey;
 
         String shop = request.getShop();
-        if (shop != "") {
+        if (shop != ""
+            && shop != null
+        ) {
             key = privateRoutingKeyBase + '.' + shop;
         }
         System.out.println("Send msg=" + request.getParam() + " for exchange " + exchange + " whit key " + key);

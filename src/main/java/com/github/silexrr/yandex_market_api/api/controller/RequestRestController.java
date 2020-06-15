@@ -41,12 +41,14 @@ public class RequestRestController {
     public APIResponse add(
             @RequestParam("method") String method,
             @RequestParam("param") String param,
-            @RequestParam("shop") String shop
+            @RequestParam("shop") Optional<String> shopOptional
     ) {
         Request request = new Request();
         request.setId(UUID.randomUUID().toString());
         request.setMethod(method);
-        request.setShop(shop);
+        if (shopOptional.isEmpty() == false) {
+            request.setShop(shopOptional.get());
+        }
         request.setParam(param);
         requestRestService.add(request);
 
