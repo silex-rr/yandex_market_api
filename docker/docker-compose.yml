@@ -1,14 +1,19 @@
-version: "3"
-
 services:
 
   app-server:
+    image: ymapi:${APP_IMAGE_VERSION}
+    build:
+      context: ./../
+        args:
+          JAR_FILE: target/yandex_market_api-${APP_BUILD_VERSION}.jar
 
-    build: ./../
     working_dir: /app
     volumes:
       - ./../:/app
     command: mvn clean spring-boot:run
+    environment:
+      - MONGO_URI=mongodb://mongodbYMAPI
+      - RABBIT_URI=amqp://rabbitYMAPI
     ports:
       - 8089:8080
     restart: always
@@ -21,56 +26,43 @@ services:
   mongodb:
     image: mongo:latest
     expose:
-      - 27017:27017
-      - 27018:27018
-      - 27019:27019
+      - 27017
+      - 27018
+      - 27019
     restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: temporary_password
     volumes:
-      - db-data:/data/db
+      - "db_data:/data/db"
     networks:
-      - backend
+      backend:
+        aliases:
+          - "mongodbYMAPI"
 
   rabbitMQ:
     image: rabbitmq:3-alpine
     expose:
-      - 5672:5672
+      - 5672
     restart: always
     networks:
-      - backend
+      backend:
+        aliases:
+          - "rabbitYMAPI"
 
-#  mongo-express:
-#    image: mongo-express
-#    restart: always
-#    ports:
-#      - 8081:8081
-#    environment:
-#      ME_CONFIG_MONGODB_ADMINUSERNAME: root
-#      ME_CONFIG_MONGODB_ADMINPASSWORD: temporary_password
-#    networks:
-#      - backend
+  #  mongo-express:
+  #    image: mongo-express
+  #    restart: always
+  #    ports:
+  #      - 8081:8081
+  #    environment:
+  #      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+  #      ME_CONFIG_MONGODB_ADMINPASSWORD: temporary_password
+  #    networks:
+  #      - backend
 
-  # Volumes
-  volumes:
-    db-data:
-
-  # Networks to be created to facilitate communication between containers
-  networks:
-    backend:
-
-
-#
-#  backend:
-#    image: 14-ea-12-jdk-alpine
-#    container_name: jdk
-#    expose:
-#      - "8080"
-#    environment:
-#      - TZ=Europe/Moscow
-#    restart: always
-#    args:
-#      JAR_FILE:
-#    volumes:
-#    -"target/yandex_market_api-0.1.0.jar:
+volumes:
+  db_data:
+networks:
+  backend:
+    driver: bridge
