@@ -9,9 +9,12 @@
 
         <@spring.bind 'userForm.login'/>
         <div class="form-group row <#if spring.status.error>has-error</#if>">
-            <label class="col-sm-2 col-form-label">Login:</label>
+            <label for="form_${spring.status.expression}" class="col-sm-2 col-form-label">Login:</label>
             <div class="col-sm-6">
-                <input type="text" name="${spring.status.expression}" value="${spring.status.value?html}"
+                <input if="form_${spring.status.expression}"
+                       type="text"
+                       name="${spring.status.expression}"
+                       value="${spring.status.value?html}"
                        class="form-control"
                        placeholder="login"
                        autofocus="autofocus"
@@ -26,9 +29,13 @@
 
         <@spring.bind 'userForm.name'/>
         <div class="form-group row <#if spring.status.error> has-error</#if>">
-            <label class="col-sm-2 col-form-label">User Name:</label>
+            <label for="form_${spring.status.expression}" class="col-sm-2 col-form-label">User Name:</label>
             <div class="col-sm-6">
-                <input type="text" name="${spring.status.expression}" value="${spring.status.value?html}"
+                <input
+                       id="form_${spring.status.expression}"
+                       type="text"
+                       name="${spring.status.expression}"
+                       value="${spring.status.value?html}"
                        class="form-control"
                        placeholder="user name"
                 />
@@ -42,11 +49,15 @@
 
         <@spring.bind 'userForm.email'/>
         <div class="form-group row <#if spring.status.error> has-error</#if>">
-            <label class="col-sm-2 col-form-label">E-mail:</label>
+            <label for="form_${spring.status.expression}" class="col-sm-2 col-form-label">E-mail:</label>
             <div class="col-sm-6">
-                <input type="text" name="${spring.status.expression}" value="${spring.status.value?html}"
-                    class="form-control"
-                    placeholder="e-mail"
+                <input
+                        id="form_${spring.status.expression}"
+                        type="text"
+                        name="${spring.status.expression}"
+                        value="${spring.status.value?html}"
+                        class="form-control"
+                        placeholder="e-mail"
                 />
                 <#if spring.status.error>
                     <ul class="text-danger">
@@ -58,11 +69,15 @@
 
         <@spring.bind 'userForm.password'/>
         <div class="form-group row <#if spring.status.error> has-error</#if>">
-            <label class="col-sm-2 col-form-label">Password:</label>
+            <label for="form_${spring.status.expression}" class="col-sm-2 col-form-label">Password:</label>
             <div class="col-sm-6">
-                <input type="password" name="${spring.status.expression}" value=""
-                       class="form-control"
-                       placeholder="Password"
+                <input
+                        id="form_${spring.status.expression}"
+                        type="password"
+                        name="${spring.status.expression}"
+                        value=""
+                        class="form-control"
+                        placeholder="Password"
                 />
                 <#if spring.status.error>
                     <ul class="text-danger">
@@ -74,11 +89,15 @@
 
         <@spring.bind 'userForm.passwordConfirm'/>
         <div class="form-group row <#if spring.status.error> has-error</#if>">
-            <label class="col-sm-2 col-form-label">Password confirm:</label>
+            <label for="form_${spring.status.expression}" class="col-sm-2 col-form-label">Password confirm:</label>
             <div class="col-sm-6">
-                <input type="password" name="${spring.status.expression}" value=""
-                       class="form-control"
-                       placeholder="Confirm your password"
+                <input
+                        id="form_${spring.status.expression}"
+                        type="password"
+                        name="${spring.status.expression}"
+                        value=""
+                        class="form-control"
+                        placeholder="Confirm your password"
                 />
                 <#if spring.status.error>
                     <ul class="text-danger">

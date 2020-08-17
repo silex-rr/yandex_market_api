@@ -1,19 +1,26 @@
+version: '3'
+
 services:
 
   app-server:
     image: ymapi:${APP_IMAGE_VERSION}
     build:
-      context: ./../
-        args:
-          JAR_FILE: target/yandex_market_api-${APP_BUILD_VERSION}.jar
+      context: ./
+      args:
+        JAR_FILE: /target/yandex_market_api-${APP_BUILD_VERSION}.jar
 
     working_dir: /app
     volumes:
-      - ./../:/app
+      - ./:/app
+      - ~/.m2:/root/.m2
     command: mvn clean spring-boot:run
     environment:
-      - MONGO_URI=mongodb://mongodbYMAPI
-      - RABBIT_URI=amqp://rabbitYMAPI
+      - MONGODB_HOST=mongodb
+      - MONGODB_DB=${MONGODB_DB}
+      - MONGODB_PORT=27017
+      - MONGODB_USER=${MONGODB_USER}
+      - MONGODB_PASSWORD=${MONGODB_PASSWORD}
+      - RABBIT_HOST=rabbit
     ports:
       - 8089:8080
     restart: always
@@ -24,21 +31,23 @@ services:
       - backend
 
   mongodb:
-    image: mongo:latest
+    image: bitnami/mongodb:latest
     expose:
       - 27017
       - 27018
       - 27019
     restart: always
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: temporary_password
+      MONGODB_ROOT_PASSWORD: ${MONGODB_ROOT_PASSWORD}
+      MONGODB_USERNAME: ${MONGODB_USER}
+      MONGODB_PASSWORD: ${MONGODB_PASSWORD}
+      MONGODB_DATABASE: ${MONGODB_DB}
     volumes:
-      - "db_data:/data/db"
+      - "mogodb:/bitnami/mongodb"
     networks:
       backend:
         aliases:
-          - "mongodbYMAPI"
+          - "mongodb"
 
   rabbitMQ:
     image: rabbitmq:3-alpine
@@ -48,7 +57,7 @@ services:
     networks:
       backend:
         aliases:
-          - "rabbitYMAPI"
+          - "rabbit"
 
   #  mongo-express:
   #    image: mongo-express
@@ -62,7 +71,7 @@ services:
   #      - backend
 
 volumes:
-  db_data:
+  mogodb:
 networks:
   backend:
     driver: bridge
