@@ -6,7 +6,7 @@ ARG JAR_FILE
 WORKDIR /app
 ADD . /app
 RUN mvn -v
-RUN rm /app${JAR_FILE}
+RUN rm /app${JAR_FILE} || true
 RUN mvn clean install -DskipTests
 #RUN ls -ld $PWD/*
 #RUN mvn verify clean --fail-never package

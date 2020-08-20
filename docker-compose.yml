@@ -22,7 +22,7 @@ services:
       - MONGODB_PASSWORD=${MONGODB_PASSWORD}
       - RABBIT_HOST=rabbit
     ports:
-      - 8089:8080
+      - 127.0.0.1:8089:8080
     restart: always
     depends_on:
       - mongodb
@@ -43,7 +43,7 @@ services:
       MONGODB_PASSWORD: ${MONGODB_PASSWORD}
       MONGODB_DATABASE: ${MONGODB_DB}
     volumes:
-      - "mogodb:/bitnami/mongodb"
+      - "./mongodb:/bitnami/mongodb"
     networks:
       backend:
         aliases:
@@ -71,7 +71,7 @@ services:
   #      - backend
 
 volumes:
-  mogodb:
+  mongodb:
 networks:
   backend:
     driver: bridge

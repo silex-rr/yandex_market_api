@@ -3,6 +3,7 @@ package com.github.silexrr.yandex_market_api.auth.web;
 import com.github.silexrr.yandex_market_api.auth.model.User;
 import com.github.silexrr.yandex_market_api.auth.service.UserDetailsServiceImpl;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -10,6 +11,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -47,7 +49,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             jwtToken = requestTokenHeader.substring(7);
             try {
                  userId = jwtTokenUtil.getUserIdFromToken(jwtToken);
-            } catch (IllegalArgumentException e) {
+            } catch (MalformedJwtException | IllegalArgumentException e) {
                 System.out.println("Unable to get JWT Token");
             } catch (ExpiredJwtException e) {
                 System.out.println("JWT Token has expired");
@@ -59,15 +61,23 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         if (userId != null
             && SecurityContextHolder.getContext().getAuthentication() == null
         ) {
-            User user = this.userDetailsService.loadUserById(userId);
+            User user = null;
+            try {
+                user = this.userDetailsService.loadUserById(userId);
+            } catch (UsernameNotFoundException e) {
+                logger.info("JWT: invalid user");
+                //do nothing
+            }
 
 //            StringBuilder error = new StringBuilder();
 
-            if (jwtTokenUtil.validateToken(
+            if (user != null
+                && jwtTokenUtil.validateToken(
                     jwtToken
                     , user
 //                    , error
-            )) {
+                )
+            ) {
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken
                         = new UsernamePasswordAuthenticationToken(
                         user,
@@ -77,10 +87,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 usernamePasswordAuthenticationToken.setDetails(
                         new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-            } else {
-//                response.sendError(HttpServletResponse.SC_FORBIDDEN, error.toString());
-//                return;
             }
+//            else {
+////                response.sendError(HttpServletResponse.SC_FORBIDDEN, error.toString());
+////                return;
+//            }
         }
         filterChain.doFilter(request, response);
     }
