@@ -61,11 +61,14 @@ public class ShopMQListener {
         keys.add(privetKey);
 //        ApplicationContext applicationContext =
 //                new ClassPathXmlApplicationContext("./../../scopes.xml");
+
         Queue queue = rabbitAdmin.declareQueue();
+        DirectExchange exchange = new DirectExchange(this.exchange);
+        rabbitAdmin.declareExchange(exchange);
         containerCommon = startListening(
                 rabbitAdmin,
                 queue,
-                new DirectExchange(exchange),
+                exchange,
                 keys,
                 message -> {
                     LocalDateTime lastRequestTime = shopStatisticsService.getLastRequestTime(shop);

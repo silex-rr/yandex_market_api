@@ -65,12 +65,12 @@ public class RequestRestService {
         String key = commonRoutingKey;
 
         String shop = request.getShop();
-        if (shop != ""
+        if (shop.equals("") == false
             && shop != null
         ) {
             key = privateRoutingKeyBase + '.' + shop;
         }
-        System.out.println("Send msg=" + request.getParam() + " for exchange " + exchange + " whit key " + key);
+//        System.out.println("Send msg=" + request.getParam() + " for exchange " + exchange + " whit key " + key);
         rabbitTemplateCustom.convertAndSend(exchange, key, request);
 
 //        rabbitTemplateCustom.convertAndSend(exchange, routingKey, request);
@@ -120,8 +120,8 @@ public class RequestRestService {
 //                System.out.println(queueName + " has " + messageCount + " messages");
                 totalMessageCount += messageCount;
 
-            };
-        };
+            }
+        }
         return totalMessageCount;
     }
 
