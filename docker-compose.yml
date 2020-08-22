@@ -30,6 +30,14 @@ services:
     networks:
       - backend
 
+
+  mongodb-fix-permissions:
+    image: 'alpine:latest'
+    user: 0:0
+    command: chmod -R 0777 /bitnami
+    volumes:
+      - ./mongodb_data:/bitnami
+
   mongodb:
     image: bitnami/mongodb:latest
     expose:
@@ -43,7 +51,9 @@ services:
       MONGODB_PASSWORD: ${MONGODB_PASSWORD}
       MONGODB_DATABASE: ${MONGODB_DB}
     volumes:
-      - "./mongodb:/bitnami/mongodb"
+      - ./mongodb_data:/bitnami/mongodb:rw
+    depends_on:
+      - mongodb-fix-permissions
     networks:
       backend:
         aliases:
@@ -59,16 +69,6 @@ services:
         aliases:
           - "rabbit"
 
-  #  mongo-express:
-  #    image: mongo-express
-  #    restart: always
-  #    ports:
-  #      - 8081:8081
-  #    environment:
-  #      ME_CONFIG_MONGODB_ADMINUSERNAME: root
-  #      ME_CONFIG_MONGODB_ADMINPASSWORD: temporary_password
-  #    networks:
-  #      - backend
 
 volumes:
   mongodb:
