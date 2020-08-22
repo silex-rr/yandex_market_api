@@ -2,9 +2,10 @@
 <#import "/spring.ftl" as spring>
 
 <@c.page>
-    <h2 class="mb-5">List of stores</h2>
+    <h2 class="mb-5">List of shops</h2>
     <table class="table">
         <thead class="thead-dark">
+            <th scope="col">Id</th>
             <th scope="col">Name</th>
             <th scope="col">Enable</th>
             <th scope="col">YM Company ID</th>
@@ -15,6 +16,7 @@
         <tbody>
             <#list shops as shop>
                 <tr>
+                    <td>${shop.getId()}</td>
                     <td>${shop.getName()}</td>
                     <td>
                         <#if shop.isEnable()>

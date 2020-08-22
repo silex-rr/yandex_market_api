@@ -91,6 +91,14 @@ public class UserController {
         return "auth/login";
     }
 
+    @GetMapping("/users")
+    public String users(Model model) {
+        List<User> all = userService.findAll();
+//        System.out.println(all);
+        model.addAttribute("users", all);
+        return "auth/users";
+    }
+
 //    @PostMapping("/logout")
 //    public String logout() {
 //        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
