@@ -36,8 +36,7 @@ public class RequestRestController {
     @Autowired
     private ResponseService responseService;
 
-
-    @GetMapping(value = "/add")
+    @RequestMapping(value = "/add")
     public APIResponse add(
             @RequestParam("method") String method,
             @RequestParam("param") String param,
@@ -46,7 +45,7 @@ public class RequestRestController {
         Request request = new Request();
         request.setId(UUID.randomUUID().toString());
         request.setMethod(method);
-        if (shopOptional.isEmpty() == false) {
+        if (!shopOptional.isEmpty()) {
             request.setShop(shopOptional.get());
         }
         request.setParam(param);
