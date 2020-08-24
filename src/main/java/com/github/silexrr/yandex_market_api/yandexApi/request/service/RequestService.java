@@ -6,6 +6,9 @@ import com.github.silexrr.yandex_market_api.yandexApi.request.model.Query;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.http.ReactiveHttpOutputMessage;
+import org.springframework.web.reactive.function.BodyInserter;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
@@ -14,6 +17,7 @@ public class RequestService {
     public String send(Method method)
     {
         method.execute();
+
         Query query = method.getQuery();
         WebClient webClient = WebClient.create();
         HttpMethod type = HttpMethod.GET;
@@ -44,7 +48,7 @@ public class RequestService {
                     .uri(uri)
                     .contentType(MediaType.APPLICATION_JSON)
                     .header(HttpHeaders.AUTHORIZATION, OAuthString)
-//                .body(BodyInserters.fromFormData(request.getParameters()))
+                    .body(method.getBody())
                     .retrieve()
                     .bodyToMono(String.class)
                     .block();

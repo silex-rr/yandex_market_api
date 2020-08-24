@@ -65,8 +65,8 @@ public class RequestRestService {
         String key = commonRoutingKey;
 
         String shop = request.getShop();
-        if (shop.equals("") == false
-            && shop != null
+        if ( shop != null
+                && !shop.equals("")
         ) {
             key = privateRoutingKeyBase + '.' + shop;
         }
