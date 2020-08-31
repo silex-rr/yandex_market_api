@@ -54,6 +54,11 @@ public class ShopServiceImpl implements ShopService{
     public Shop findById(UUID uuid) {
         return shopRepository.findById(uuid);
     }
+
+    @Override
+    public List<Shop> findByUserOwnersContains(User user) {
+        return shopRepository.findByUserOwnersContains(user);
+    }
     public Optional<Shop> findById(String id) {
         return shopRepository.findById(id);
     }

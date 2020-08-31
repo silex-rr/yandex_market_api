@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.UUID;
 
 @Entity
-@Document(collection = "api_token")
+@Document(collection = "apiToken")
 public class APIToken {
 
     @Id

@@ -1,5 +1,6 @@
 package com.github.silexrr.yandex_market_api.auth.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,6 +16,7 @@ import java.util.UUID;
 
 @Entity
 @Document(collection = "user")
+@JsonIgnoreProperties({"password", "passwordConfirm"})
 public class User implements UserDetails {
 
     @Id

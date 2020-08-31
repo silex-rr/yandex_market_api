@@ -17,14 +17,16 @@ public class Response {
     private String method;
     private Date date;
     private Query query;
+    private String userId;
     private String response;
     private boolean delivered;
 
-    public Response(Query query, String response, String method, String requestId) {
+    public Response(Query query, String response, String method, String requestId, String userId) {
         this.query = query;
         this.response = response;
         this.method = method;
         this.requestId = requestId;
+        this.userId = userId;
         this.date = new Date();
         this.delivered = false;
     }
@@ -85,6 +87,14 @@ public class Response {
         this.requestId = requestId;
     }
 
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
     @Override
     public String toString() {
         return "Response{" +
@@ -93,6 +103,7 @@ public class Response {
                 ", method='" + method + '\'' +
                 ", date=" + date +
                 ", query=" + query +
+                ", UserId='" + userId + '\'' +
                 ", response='" + response + '\'' +
                 ", delivered=" + delivered +
                 '}';

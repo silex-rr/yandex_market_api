@@ -13,6 +13,7 @@ public interface ShopService {
     void delete(Shop shop);
     Shop findByName(String name);
     Shop findById(UUID id);
+    List<Shop> findByUserOwnersContains(User user);
     Optional<Shop> findById(String id);
     int countToken(Shop shop);
     List<Shop> getEnable(boolean enable);

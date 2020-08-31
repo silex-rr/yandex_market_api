@@ -1,5 +1,6 @@
 package com.github.silexrr.yandex_market_api.shop.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Entity;
@@ -7,6 +8,7 @@ import java.util.Date;
 import java.util.UUID;
 
 @Entity
+@JsonIgnoreProperties({"oauthToken", "oauthClientId", "password"})
 public class YMToken {
 
     private String id;

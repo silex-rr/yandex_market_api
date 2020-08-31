@@ -5,8 +5,10 @@ import com.github.silexrr.yandex_market_api.api.model.APIResponse;
 import com.github.silexrr.yandex_market_api.api.model.APIResponseStatus;
 import com.github.silexrr.yandex_market_api.api.model.Request;
 import com.github.silexrr.yandex_market_api.api.service.RequestRestService;
+import com.github.silexrr.yandex_market_api.auth.model.User;
 import com.github.silexrr.yandex_market_api.config.RabbitMQConfig;
 import com.github.silexrr.yandex_market_api.shop.model.Shop;
+import com.github.silexrr.yandex_market_api.shop.model.YMToken;
 import com.github.silexrr.yandex_market_api.shop.service.ShopMQListener;
 import com.github.silexrr.yandex_market_api.shop.service.ShopService;
 import com.github.silexrr.yandex_market_api.yandexApi.model.Response;
@@ -16,15 +18,11 @@ import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Properties;
-import java.util.UUID;
+import java.util.*;
 
 import static org.springframework.amqp.rabbit.core.RabbitAdmin.QUEUE_NAME;
 
@@ -35,8 +33,10 @@ public class RequestRestController {
     private RequestRestService requestRestService;
     @Autowired
     private ResponseService responseService;
+    @Autowired
+    private ShopService shopService;
 
-    @RequestMapping(value = "/add")
+    @PutMapping(value = "/add")
     public APIResponse add(
             @RequestParam("method") String method,
             @RequestParam("param") String param,
@@ -49,6 +49,11 @@ public class RequestRestController {
             request.setShop(shopOptional.get());
         }
         request.setParam(param);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication != null) {
+            User principal = (User)authentication.getPrincipal();
+            request.setUserId(principal.getId());
+        }
         requestRestService.add(request);
 
         APIResponse apiResponse = new APIResponse();
@@ -58,7 +63,31 @@ public class RequestRestController {
         return apiResponse;
     }
 
+    @GetMapping(value = "/getAllMyResponse")
+    public List<Response> getAllMyResponse() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        List<Response> responses = new ArrayList<>();
+        if(authentication != null) {
+            User user = (User) authentication.getPrincipal();
+            responses = responseService.findAllByUserId(user.getId());
+        }
+        return responses;
+    }
 
+    @GetMapping(value = "/getShops")
+    public List<Shop> getShops() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        List<Shop> shops = new ArrayList<>();
+        if (authentication != null) {
+            User principal = (User)authentication.getPrincipal();
+            shops = shopService.findByUserOwnersContains(principal);
+        }
+//        shops.forEach(shop -> {
+//            shop.setYMTokens(new ArrayList<>());
+//            shop.setUserOwners(new ArrayList<>());
+//        });
+        return shops;
+    }
 
     @GetMapping(value = "/getByRequestId")
     public APIResponse get(

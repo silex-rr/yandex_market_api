@@ -13,6 +13,7 @@ public class Request implements Serializable {
     private String shop;
     private String param;
     private Date date;
+    private String userId;
 
     public Request() {
         this.id = "";
@@ -59,6 +60,14 @@ public class Request implements Serializable {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     @Override

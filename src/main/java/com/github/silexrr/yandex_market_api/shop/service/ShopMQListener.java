@@ -135,7 +135,13 @@ public class ShopMQListener {
 
                         String YMResponse = requestService.send(method);
 
-                        Response response = new Response(query, YMResponse, method.getMethodName(), request.getId());
+                        Response response = new Response(
+                                query,
+                                YMResponse,
+                                method.getMethodName(),
+                                request.getId(),
+                                request.getUserId()
+                        );
                         responseService.save(response);
                         System.out.println("Response: " + response.getResponse());
 
