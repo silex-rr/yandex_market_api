@@ -38,16 +38,17 @@ public class ShopMQListener {
     static private HashMap<String, ArrayList<Queue>> shopQueue = new HashMap<>();
 
     private AbstractMessageListenerContainer containerCommon;
-    private AbstractMessageListenerContainer containerPrivate;
     private String exchange;
     private static String commonKey;
     private static final Logger logger = LoggerFactory.getLogger(SecurityServiceImpl.class);
     private String privetKeyBase;
     private String privetKey;
+    private Shop shop;
     private RabbitAdmin rabbitAdmin;
     private MessageConverter messageConverter;
 
-    private ShopMQListener (Shop shop, RabbitMQConfig rabbitMQConfig, ResponseService responseService, ShopStatisticsService shopStatisticsService) {
+    private ShopMQListener (Shop shopListener, RabbitMQConfig rabbitMQConfig, ResponseService responseService, ShopStatisticsService shopStatisticsService) {
+        shop = shopListener;
         rabbitAdmin = rabbitMQConfig.rabbitAdmin();
         exchange = rabbitMQConfig.getExchange();
         commonKey = rabbitMQConfig.getCommonRoutingKey();
@@ -159,7 +160,6 @@ public class ShopMQListener {
                         e.printStackTrace();
                     }
                 });
-
 //        container.addQueueNames(queueName);
         ArrayList<ShopMQListener> shopListeners = getShopListeners(shop);
         shopListeners.add(this);
@@ -209,15 +209,19 @@ public class ShopMQListener {
         return containerCommon;
     }
 
-    public AbstractMessageListenerContainer getContainerPrivate() {
-        return containerPrivate;
-    }
-
     public String getCommonKey() {
         return commonKey;
     }
 
     public String getPrivetKey() {
         return privetKey;
+    }
+
+    public Shop getShop() {
+        return shop;
+    }
+
+    public void setShop(Shop shop) {
+        this.shop = shop;
     }
 }

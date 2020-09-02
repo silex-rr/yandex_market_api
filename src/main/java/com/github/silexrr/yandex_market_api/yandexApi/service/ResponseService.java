@@ -11,4 +11,5 @@ public interface ResponseService {
     Optional<Response> findById(String id);
     Optional<Response> findByRequestId(String requestId);
     List<Response> findAllByUserId(String userId);
+    void deleteAllByDeliveredIsTrue();
 }

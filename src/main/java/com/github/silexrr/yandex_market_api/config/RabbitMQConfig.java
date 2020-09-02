@@ -102,8 +102,11 @@ public class RabbitMQConfig {
         listener.addQueues(queue);
         listener.setMessageListener(messageListener);
         listener.start();
-
         return listener;
+    }
+
+    public static void stopListening (SimpleMessageListenerContainer listener) {
+        listener.stop();
     }
 
     public String getQueueName() {

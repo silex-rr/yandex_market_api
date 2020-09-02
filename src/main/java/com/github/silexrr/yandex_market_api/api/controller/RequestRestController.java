@@ -70,6 +70,10 @@ public class RequestRestController {
         if(authentication != null) {
             User user = (User) authentication.getPrincipal();
             responses = responseService.findAllByUserId(user.getId());
+            responses.forEach(response -> {
+                response.setDelivered(true);
+                responseService.save(response);
+            });
         }
         return responses;
     }
@@ -102,6 +106,8 @@ public class RequestRestController {
         }
         apiResponse.setResponseStatus(APIResponseStatus.DONE);
         Response response = byRequestId.get();
+        response.setDelivered(true);
+        responseService.save(response);
         apiResponse.setBody(response.getResponse().replaceAll("\\\"", ""));
         return apiResponse;
     }

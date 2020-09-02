@@ -1,35 +1,21 @@
 package com.github.silexrr.yandex_market_api.api.service;
 
-import com.github.silexrr.yandex_market_api.YandexMarketApiApplication;
 import com.github.silexrr.yandex_market_api.api.model.Request;
 import com.github.silexrr.yandex_market_api.config.RabbitMQConfig;
 import com.github.silexrr.yandex_market_api.shop.model.Shop;
 import com.github.silexrr.yandex_market_api.shop.service.ShopMQListener;
 import com.github.silexrr.yandex_market_api.shop.service.ShopService;
-import com.rabbitmq.client.AMQP;
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.ConnectionFactory;
 import org.springframework.amqp.core.*;
-import org.springframework.amqp.rabbit.connection.Connection;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
-import org.springframework.amqp.rabbit.listener.AbstractMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
-import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.json.JsonParser;
 import org.springframework.boot.json.JsonParserFactory;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Service;
-import org.springframework.amqp.core.BindingBuilder;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-
-import static com.github.silexrr.yandex_market_api.config.RabbitMQConfig.startListening;
-import static org.springframework.amqp.rabbit.core.RabbitAdmin.QUEUE_NAME;
 
 @Service
 public class RequestRestService {
@@ -115,10 +101,13 @@ public class RequestRestService {
                 String queueName = queue.getName();
 
                 Properties queueProperties = rabbitAdmin.getQueueProperties(queueName);
-//                System.out.println(queueProperties);
+                QueueInformation queueInfo = rabbitAdmin.getQueueInfo(queueName);
+                System.out.println(queueInfo);
+                System.out.println(queueProperties);
                 long messageCount = Integer.parseInt(queueProperties.get("QUEUE_MESSAGE_COUNT").toString());
-//                System.out.println(queueName + " has " + messageCount + " messages");
+                System.out.println(queueName + " has " + messageCount + " messages");
                 totalMessageCount += messageCount;
+
 
             }
         }

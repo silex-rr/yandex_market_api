@@ -16,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -43,6 +44,19 @@ public class ShopServiceImpl implements ShopService{
     @Override
     public void save(Shop shop) {
         shopRepository.save(shop);
+        ArrayList<ShopMQListener> shopListeners = ShopMQListener.getShopListeners(shop);
+        if (shopListeners.isEmpty()) {
+            ShopMQListener.addListener(
+                    shop,
+                    rabbitMQConfig,
+                    responseService,
+                    shopStatisticsService
+            );
+            return;
+        }
+        shopListeners.forEach(listener -> {
+            listener.setShop(shop);
+        });
     }
 
     @Override

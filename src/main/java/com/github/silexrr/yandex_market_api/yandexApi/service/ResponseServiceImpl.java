@@ -37,4 +37,9 @@ public class ResponseServiceImpl implements ResponseService {
     public List<Response> findAllByUserId(String userId) {
         return responseRepository.findAllByUserId(userId);
     }
+
+    @Override
+    public void deleteAllByDeliveredIsTrue() {
+       responseRepository.deleteAllByDeliveredIsTrue();
+    }
 }

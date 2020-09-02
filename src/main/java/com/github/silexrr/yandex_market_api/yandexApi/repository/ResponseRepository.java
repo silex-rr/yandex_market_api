@@ -11,4 +11,6 @@ public interface ResponseRepository extends MongoRepository<Response, String> {
     public Optional<Response> findById(String s);
     public Optional<Response> findByRequestId(String requestId);
     public List<Response> findAllByUserId(String userId);
+    public List<Response> findAllByDelivered(Boolean delivered);
+    public void deleteAllByDeliveredIsTrue();
 }
