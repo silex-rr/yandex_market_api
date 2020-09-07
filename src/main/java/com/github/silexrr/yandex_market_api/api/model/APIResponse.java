@@ -3,13 +3,13 @@ package com.github.silexrr.yandex_market_api.api.model;
 public class APIResponse {
     private APIResponseStatus responseStatus;
     private String requestId;
-    private long queueNumber;
-    private long secondsLeftUntilReady;
+    private long messageCount;
+    private long timeToReady;
     private String body;
 
     public APIResponse() {
-        queueNumber = 0;
-        secondsLeftUntilReady = 0;
+        messageCount = 0;
+        timeToReady = 0;
     }
 
     public APIResponseStatus getResponseStatus() {
@@ -36,20 +36,20 @@ public class APIResponse {
         this.body = body;
     }
 
-    public long getQueueNumber() {
-        return queueNumber;
+    public long getMessageCount() {
+        return messageCount;
     }
 
-    public void setQueueNumber(long queueNumber) {
-        this.queueNumber = queueNumber;
+    public void setMessageCount(long messageCount) {
+        this.messageCount = messageCount;
     }
 
-    public long getSecondsLeftUntilReady() {
-        return secondsLeftUntilReady;
+    public long getTimeToReady() {
+        return timeToReady;
     }
 
-    public void setSecondsLeftUntilReady(long secondsLeftUntilReady) {
-        this.secondsLeftUntilReady = secondsLeftUntilReady;
+    public void setTimeToReady(long timeToReady) {
+        this.timeToReady = timeToReady;
     }
 
 
@@ -58,8 +58,8 @@ public class APIResponse {
         return "APIResponse{" +
                 "responseStatus=" + responseStatus +
                 ", requestId='" + requestId + '\'' +
-                ", queueNumber=" + queueNumber +
-                ", secondsLeftUntilReady=" + secondsLeftUntilReady +
+                ", queueNumber=" + messageCount +
+                ", secondsLeftUntilReady=" + timeToReady +
                 ", body='" + body + '\'' +
                 '}';
     }

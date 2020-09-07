@@ -21,6 +21,8 @@ public class RabbitMQConfig {
 
     @Value("${spring.rabbitmq.host}")
     private String rabbitHost;
+    @Value("${spring.rabbitmq.statistic.port}")
+    private String rabbitStatisticPort;
 
     @Value("${spring.rabbitmq.username}")
     private String rabbitUsername;
@@ -127,5 +129,11 @@ public class RabbitMQConfig {
         return privetRoutingKeyBase;
     }
 
+    public String getRabbitHost() {
+        return rabbitHost;
+    }
 
+    public String getRabbitStatisticPort() {
+        return rabbitStatisticPort;
+    }
 }

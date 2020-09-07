@@ -4,18 +4,13 @@ package com.github.silexrr.yandex_market_api.api.controller;
 import com.github.silexrr.yandex_market_api.api.model.APIResponse;
 import com.github.silexrr.yandex_market_api.api.model.APIResponseStatus;
 import com.github.silexrr.yandex_market_api.api.model.Request;
+import com.github.silexrr.yandex_market_api.api.service.APIStatistic;
 import com.github.silexrr.yandex_market_api.api.service.RequestRestService;
 import com.github.silexrr.yandex_market_api.auth.model.User;
-import com.github.silexrr.yandex_market_api.config.RabbitMQConfig;
 import com.github.silexrr.yandex_market_api.shop.model.Shop;
-import com.github.silexrr.yandex_market_api.shop.model.YMToken;
-import com.github.silexrr.yandex_market_api.shop.service.ShopMQListener;
 import com.github.silexrr.yandex_market_api.shop.service.ShopService;
 import com.github.silexrr.yandex_market_api.yandexApi.model.Response;
 import com.github.silexrr.yandex_market_api.yandexApi.service.ResponseService;
-import com.rabbitmq.client.AMQP;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
@@ -23,8 +18,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
-
-import static org.springframework.amqp.rabbit.core.RabbitAdmin.QUEUE_NAME;
 
 @RestController
 @RequestMapping(value = "/rest/request", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -35,6 +28,8 @@ public class RequestRestController {
     private ResponseService responseService;
     @Autowired
     private ShopService shopService;
+    @Autowired
+    private APIStatistic apiStatistic;
 
     @PutMapping(value = "/add")
     public APIResponse add(
@@ -59,7 +54,7 @@ public class RequestRestController {
         APIResponse apiResponse = new APIResponse();
         apiResponse.setResponseStatus(APIResponseStatus.DONE);
         apiResponse.setRequestId(request.getId());
-        apiResponse.setQueueNumber(requestRestService.getQueueSize());
+        apiResponse.setMessageCount(apiStatistic.getTotalMessagesGlobal());
         return apiResponse;
     }
 

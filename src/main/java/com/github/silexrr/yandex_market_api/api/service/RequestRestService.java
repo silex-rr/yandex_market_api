@@ -2,8 +2,6 @@ package com.github.silexrr.yandex_market_api.api.service;
 
 import com.github.silexrr.yandex_market_api.api.model.Request;
 import com.github.silexrr.yandex_market_api.config.RabbitMQConfig;
-import com.github.silexrr.yandex_market_api.shop.model.Shop;
-import com.github.silexrr.yandex_market_api.shop.service.ShopMQListener;
 import com.github.silexrr.yandex_market_api.shop.service.ShopService;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
@@ -15,7 +13,6 @@ import org.springframework.boot.json.JsonParserFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
-import java.util.Properties;
 
 @Service
 public class RequestRestService {
@@ -31,6 +28,7 @@ public class RequestRestService {
     private RabbitMQConfig rabbitMQConfig;
     @Autowired
     private ShopService shopService;
+
 
     @Value("${rabbitmq.request.exchange}")
     private String exchange;
@@ -90,28 +88,6 @@ public class RequestRestService {
 
     public RabbitAdmin getRabbitAdmin() {
         return rabbitAdmin;
-    }
-
-    public long getQueueSize()
-    {
-        long totalMessageCount = 0;
-
-        for (Shop shop : shopService.getEnable(true)) {
-            for(Queue queue : ShopMQListener.getShopQueue(shop)){
-                String queueName = queue.getName();
-
-                Properties queueProperties = rabbitAdmin.getQueueProperties(queueName);
-                QueueInformation queueInfo = rabbitAdmin.getQueueInfo(queueName);
-                System.out.println(queueInfo);
-                System.out.println(queueProperties);
-                long messageCount = Integer.parseInt(queueProperties.get("QUEUE_MESSAGE_COUNT").toString());
-                System.out.println(queueName + " has " + messageCount + " messages");
-                totalMessageCount += messageCount;
-
-
-            }
-        }
-        return totalMessageCount;
     }
 
 }
