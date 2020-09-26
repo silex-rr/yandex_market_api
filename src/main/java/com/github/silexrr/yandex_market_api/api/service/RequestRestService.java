@@ -54,7 +54,7 @@ public class RequestRestService {
         ) {
             key = privateRoutingKeyBase + '.' + shop;
         }
-//        System.out.println("Send msg=" + request.getParam() + " for exchange " + exchange + " whit key " + key);
+//        System.out.println("Send msg=" + request + " for exchange " + exchange + " whit key " + key);
         rabbitTemplateCustom.convertAndSend(exchange, key, request);
 
 //        rabbitTemplateCustom.convertAndSend(exchange, routingKey, request);

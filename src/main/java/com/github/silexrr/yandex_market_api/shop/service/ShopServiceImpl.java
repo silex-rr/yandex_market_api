@@ -16,10 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class ShopServiceImpl implements ShopService{
@@ -39,11 +36,42 @@ public class ShopServiceImpl implements ShopService{
     @Autowired
     private ShopStatisticsService shopStatisticsService;
 
+    @Autowired
+    private ShopCache shopCache;
+
     private static final Logger logger = LoggerFactory.getLogger(SecurityServiceImpl.class);
+
+
+    private void shopListCaching(List<Shop> shops) {
+        ListIterator<Shop> shopListIterator = shops.listIterator();
+        while (shopListIterator.hasNext()) {
+            Shop shop = shopListIterator.next();
+            Optional<Shop> shopOptional = shopCache.getShop(shop);
+            if (shopOptional.isPresent()) {
+                shopListIterator.set(shopOptional.get());
+            } else {
+                shopCache.addShop(shop);
+            }
+        }
+    }
+
+    private Optional<Shop> shopCaching(Optional<Shop> shopFromRepositoryOptional) {
+        if (shopFromRepositoryOptional.isEmpty()) {
+            return shopFromRepositoryOptional;
+        }
+        Shop shopFromRepository = shopFromRepositoryOptional.get();
+        Optional<Shop> shopFromCacheOptional = shopCache.getShop(shopFromRepository);
+        if(shopFromCacheOptional.isPresent()) {
+            return shopFromCacheOptional;
+        }
+        shopCache.addShop(shopFromRepository);
+        return shopFromRepositoryOptional;
+    }
 
     @Override
     public void save(Shop shop) {
         shopRepository.save(shop);
+        shopCache.addShop(shop);
         ArrayList<ShopMQListener> shopListeners = ShopMQListener.getShopListeners(shop);
         if (shopListeners.isEmpty()) {
             ShopMQListener.addListener(
@@ -52,7 +80,6 @@ public class ShopServiceImpl implements ShopService{
                     responseService,
                     shopStatisticsService
             );
-            return;
         }
         shopListeners.forEach(listener -> {
             listener.setShop(shop);
@@ -60,25 +87,41 @@ public class ShopServiceImpl implements ShopService{
     }
 
     @Override
-    public Shop findByName(String name) {
-        return shopRepository.findByName(name);
+    public Optional<Shop> findByName(String name) {
+        Optional<Shop> shopFromRepositoryOptional = shopRepository.findByName(name);
+        return shopCaching(shopFromRepositoryOptional);
     }
 
     @Override
-    public Shop findById(UUID uuid) {
-        return shopRepository.findById(uuid);
+    public Optional<Shop> findById(UUID uuid) {
+        Optional<Shop> shopFromRepositoryOptional = shopRepository.findById(uuid);
+        return shopCaching(shopFromRepositoryOptional);
     }
 
     @Override
     public List<Shop> findByUserOwnersContains(User user) {
-        return shopRepository.findByUserOwnersContains(user);
+        List<Shop> shops = shopRepository.findByUserOwnersContains(user);
+        shopListCaching(shops);
+        return shops;
     }
+
+
+    @Override
     public Optional<Shop> findById(String id) {
-        return shopRepository.findById(id);
+        Optional<Shop> shop = shopCache.getShop(id);
+        if (shop.isPresent()) {
+            return shop;
+        }
+        Optional<Shop> shopFromRepository = shopRepository.findById(id);
+        if (shopFromRepository.isPresent()) {
+            shopCache.addShop(shopFromRepository.get());
+        }
+        return shopFromRepository;
     }
 
     @Override
     public void delete(Shop shop) {
+        shopCache.deleteShop(shop);
         shopRepository.delete(shop);
     }
 
@@ -130,6 +173,7 @@ public class ShopServiceImpl implements ShopService{
 
     @Override
     public List<Shop> getEnable(boolean enable) {
+
         return shopRepository.findAllByEnable(enable);
     }
 
@@ -138,7 +182,9 @@ public class ShopServiceImpl implements ShopService{
     {
         logger.info("Activate MQ Listeners");
 
-        getEnable(true).forEach(shop -> {
+        List<Shop> shops = getEnable(true);
+        shopListCaching(shops);
+        shops.forEach(shop -> {
             ShopMQListener.addListener(
                     shop,
                     rabbitMQConfig,

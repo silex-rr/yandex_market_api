@@ -1,5 +1,6 @@
 package com.github.silexrr.yandex_market_api.yandexApi.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.github.silexrr.yandex_market_api.yandexApi.request.model.Query;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -9,6 +10,7 @@ import java.util.Date;
 
 @Entity
 @Document(collection = "apiResponse")
+@JsonIgnoreProperties({"query"})
 public class Response {
 
     @Id

@@ -3,9 +3,9 @@ package com.github.silexrr.yandex_market_api.shop.web;
 import com.github.silexrr.yandex_market_api.auth.model.User;
 import com.github.silexrr.yandex_market_api.auth.web.JwtTokenUtil;
 import com.github.silexrr.yandex_market_api.shop.model.Shop;
-import com.github.silexrr.yandex_market_api.shop.repository.ShopRepository;
 import com.github.silexrr.yandex_market_api.shop.service.ShopService;
 import com.github.silexrr.yandex_market_api.shop.service.ShopValidator;
+import org.hibernate.validator.constraints.SafeHtml;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,14 +14,15 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping(value = "/shop")
 public class ShopController {
 
-    @Autowired
-    private ShopRepository shopRepository;
     @Autowired
     private ShopService shopService;
     @Autowired
@@ -35,7 +36,7 @@ public class ShopController {
         List<Shop> shops = new ArrayList<>();
         if (authentication != null) {
             User principal = (User)authentication.getPrincipal();
-            shops = shopRepository.findByUserOwnersContains(principal);
+            shops = shopService.findByUserOwnersContains(principal);
         }
         HashMap<String, Integer> shopsTokenCount = new HashMap<>();
 
@@ -61,10 +62,16 @@ public class ShopController {
     @GetMapping("/edit/{shop}")
     public String shopEdit(
             Model model,
-            @PathVariable(value = "shop") Shop shop
+            @PathVariable(value = "shop") Optional<Shop> shopOptional
     ) {
+        Shop shop = null;
+        if (shopOptional.isPresent()) {
+            shop = shopOptional.get();
+        }
+        if (shop == null) {
+            shop = new Shop();
+        }
         model.addAttribute("shop", shop);
-
         return "shop/edit";
     }
 
@@ -104,6 +111,44 @@ public class ShopController {
         shopService.save(shop);
         return "redirect:/shop/edit/" + shop.getId();
     }
+
+//
+//    @PostMapping("/edit/{shop}")
+//    public String shopEditSave(
+//            @PathVariable(value = "shop") Optional<Shop> shopOptional,
+//            @ModelAttribute("shop") Shop shop,
+//            BindingResult bindingResult
+//    ){
+////        System.out.println(bindingResult);
+//        if (shop.getYmCompanyId() == null) {
+//            shop.setYmCompanyId(0);
+//        }
+//        if (shop.getYmRegionId() == null) {
+//            shop.setYmRegionId(0);
+//        }
+//
+//        List<User> userOwners = shop.getUserOwners();
+//        if(userOwners.size() == 0) {
+//            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//            if (authentication != null ) {
+//                User principal = (User)authentication.getPrincipal();
+//                userOwners.add(principal);
+//                shop.setUserOwners(userOwners);
+//            }
+//        }
+//
+//        shopValidator.validate(shop, bindingResult);
+////        List<ObjectError> allErrors = bindingResult.getAllErrors();
+////        for (ObjectError error: allErrors) {
+////            System.out.println(error.getCode() + " " + error.getDefaultMessage());
+////        }
+//        if (bindingResult.hasErrors()) {
+//            return  "shop/edit";
+//        }
+//
+//        shopService.save(shop);
+//        return "redirect:/shop/edit/" + shop.getId();
+//    }
 
 
 

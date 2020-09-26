@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.util.Date;
 import java.util.UUID;
 
@@ -11,6 +12,7 @@ import java.util.UUID;
 @JsonIgnoreProperties({"oauthToken", "oauthClientId", "password"})
 public class YMToken {
 
+    @Id
     private String id;
     private String name;
     private String oauthToken;

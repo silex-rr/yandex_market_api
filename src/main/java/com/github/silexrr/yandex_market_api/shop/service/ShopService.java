@@ -11,8 +11,8 @@ import java.util.UUID;
 public interface ShopService {
     void save(Shop shop);
     void delete(Shop shop);
-    Shop findByName(String name);
-    Shop findById(UUID id);
+    Optional<Shop> findByName(String name);
+    Optional<Shop> findById(UUID id);
     List<Shop> findByUserOwnersContains(User user);
     Optional<Shop> findById(String id);
     int countToken(Shop shop);

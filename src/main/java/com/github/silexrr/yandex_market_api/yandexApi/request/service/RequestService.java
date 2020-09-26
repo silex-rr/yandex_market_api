@@ -19,6 +19,7 @@ public class RequestService {
         method.execute();
 
         Query query = method.getQuery();
+
         WebClient webClient = WebClient.create();
         HttpMethod type = HttpMethod.GET;
         switch (query.getType()) {

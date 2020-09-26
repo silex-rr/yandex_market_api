@@ -8,6 +8,8 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
+import java.util.Optional;
+
 @Component
 public class ShopValidator implements Validator {
 
@@ -27,9 +29,9 @@ public class ShopValidator implements Validator {
         ValidationUtils.rejectIfEmpty(errors, "userOwners", "Shop.error.needAuthentication");
 
         Shop shop = (Shop) o;
-        Shop shopInDbByName = this.shopRepository.findByName(shop.getName());
-        if (shopInDbByName != null
-            && !shopInDbByName.getId().equals(shop.getId())
+        Optional<Shop> shopOptionalByName = this.shopRepository.findByName(shop.getName());
+        if (shopOptionalByName.isPresent()
+            && !shopOptionalByName.get().getId().equals(shop.getId())
         ) {
             errors.rejectValue(
                 "name",
@@ -45,9 +47,9 @@ public class ShopValidator implements Validator {
                     "NotEmpty"
             );
         } else {
-            Shop shopInDbByYmCompanyId = this.shopRepository.findByYmCompanyId(ymCompanyId);
-            if (shopInDbByYmCompanyId != null
-                && !shopInDbByYmCompanyId.getId().equals(shop.getId())
+            Optional<Shop> shopOptionalByYmCompanyId = this.shopRepository.findByYmCompanyId(ymCompanyId);
+            if (shopOptionalByYmCompanyId.isPresent()
+                && !shopOptionalByYmCompanyId.get().getId().equals(shop.getId())
             ) {
                 errors.rejectValue(
                         "ymCompanyId",

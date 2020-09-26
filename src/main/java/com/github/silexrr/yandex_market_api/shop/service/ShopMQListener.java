@@ -36,6 +36,7 @@ public class ShopMQListener {
 
     static private HashMap<String, ArrayList<ShopMQListener>> shopMqListeners = new HashMap<String, ArrayList<ShopMQListener>>();
     static private HashMap<String, ArrayList<Queue>> shopQueue = new HashMap<>();
+    static private Queue queue;
 
     private AbstractMessageListenerContainer containerCommon;
     private String exchange;
@@ -54,7 +55,7 @@ public class ShopMQListener {
         commonKey = rabbitMQConfig.getCommonRoutingKey();
         privetKeyBase = rabbitMQConfig.getPrivetRoutingKeyBase();
         messageConverter = rabbitMQConfig.jsonMessageConverter();
-        logger.info("Add MQ listener for shop " + shop.getName() + "(" + shop.getId() + ")");
+
         this.privetKey = privetKeyBase + "." + shop.getId();
 //        System.out.println("Add one for exchange " + exchange + " with key " + commonKey);
         ArrayList<String> keys = new ArrayList<>();
@@ -63,9 +64,15 @@ public class ShopMQListener {
 //        ApplicationContext applicationContext =
 //                new ClassPathXmlApplicationContext("./../../scopes.xml");
 
-        Queue queue = rabbitAdmin.declareQueue();
+        if (queue == null) {
+            queue = rabbitAdmin.declareQueue();
+        }
+
         DirectExchange exchange = new DirectExchange(this.exchange);
         rabbitAdmin.declareExchange(exchange);
+        logger.info("Add MQ listener for\n\r Shop: " + shop.getName() + "(" + shop.getId() + ")\n\r Queue: " + queue.getName()
+                + "\n\r Keys: " + keys.toString());
+
         containerCommon = startListening(
                 rabbitAdmin,
                 queue,
@@ -74,12 +81,14 @@ public class ShopMQListener {
                 message -> {
                     LocalDateTime lastRequestTime = shopStatisticsService.getLastRequestTime(shop);
 
-                    if (lastRequestTime != null) {
-                        System.out.println("Last Request was at "
-                                + lastRequestTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-                    }
+//                    if (lastRequestTime != null) {
+//                        System.out.println("Last Request was at "
+//                                + lastRequestTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+//                    }
+
                     long millisecondsToNexRequest = shopStatisticsService.getMillisecondsToNexRequest(shop);
-//                    System.out.println("Milliseconds to next request left: " + millisecondsToNexRequest);
+//                    System.out.println("Milliseconds to next request left: 0." + millisecondsToNexRequest + "s. shop ("
+//                            + shop.getName() + ") rate: " + shop.getRequestsPerSecond());
                     try {
                         Thread.sleep(millisecondsToNexRequest);
                     } catch (InterruptedException e) {
@@ -101,14 +110,14 @@ public class ShopMQListener {
                     YMToken YMTokenSelected = null;
                     for(int i = YMTokens.size(); i-- > 0;) {
                         YMToken YMToken = YMTokens.get(i);
-                        System.out.println(YMToken);
+//                        System.out.println(YMToken);
                         if (YMToken.isEnable()) {
                             YMTokenSelected = YMToken;
                             break;
                         }
                     }
                     if (YMTokenSelected == null) {
-                        System.out.println("This shop don't have any enabled tokens");
+                        logger.warn("Shop " + shop.getName() + " don't have any enabled YM tokens");
                         return;
                     }
                     query.setShop(shop);

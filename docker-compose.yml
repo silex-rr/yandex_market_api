@@ -60,9 +60,10 @@ services:
           - "mongodb"
 
   rabbitMQ:
-    image: rabbitmq:3-alpine
+    image: rabbitmq:3-management
     expose:
       - 5672
+      - 15672
     restart: always
     networks:
       backend:

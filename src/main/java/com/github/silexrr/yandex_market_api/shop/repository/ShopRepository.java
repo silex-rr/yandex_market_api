@@ -10,12 +10,12 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface ShopRepository extends MongoRepository<Shop, String> {
-    public Shop findById(UUID uuid);
+    public Optional<Shop> findById(UUID uuid);
     public Optional<Shop> findById(String id);
 
-    public Shop findByName(String name);
+    public Optional<Shop> findByName(String name);
 
-    public Shop findByYmCompanyId(Integer YmCompanyId);
+    public Optional<Shop> findByYmCompanyId(Integer YmCompanyId);
 
     public List<Shop> findByUserOwnersContains(User user);
 
