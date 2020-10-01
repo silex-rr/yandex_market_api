@@ -62,6 +62,7 @@ services:
   rabbitMQ:
     image: rabbitmq:3-management
     expose:
+      - 5671
       - 5672
       - 15672
     restart: always

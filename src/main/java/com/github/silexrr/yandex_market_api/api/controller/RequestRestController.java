@@ -35,21 +35,31 @@ public class RequestRestController {
     public APIResponse add(
             @RequestParam("method") String method,
             @RequestParam("param") String param,
+            @RequestParam("priority") Optional<Integer> priorityOptional,
             @RequestParam("shop") Optional<String> shopOptional
     ) {
         Request request = new Request();
         request.setId(UUID.randomUUID().toString());
         request.setMethod(method);
-        if (!shopOptional.isEmpty()) {
-            request.setShop(shopOptional.get());
-        }
+        shopOptional.ifPresent(request::setShop);
         request.setParam(param);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication != null) {
             User principal = (User)authentication.getPrincipal();
             request.setUserId(principal.getId());
         }
-        requestRestService.add(request);
+
+        int priority = 0;
+        if (priorityOptional.isPresent()) {
+            priority = priorityOptional.get();
+        }
+        if (priority > 50) {
+            priority = 50;
+        } else if (priority < 0) {
+            priority = 0;
+        }
+
+        requestRestService.add(request, priority);
 
         APIResponse apiResponse = new APIResponse();
         apiResponse.setResponseStatus(APIResponseStatus.DONE);

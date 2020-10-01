@@ -38,7 +38,7 @@ public class RequestRestService {
     @Value("${rabbitmq.request.privetRoutingKeyBase}")
     private String privateRoutingKeyBase;
 
-    public void add(Request request) {
+    public void add(Request request, int priority) {
 
 //        System.out.println("Send msg=" + request);
 //        template.convertAndSend(exchange, routingKey, "Message");
@@ -53,11 +53,25 @@ public class RequestRestService {
                 && !shop.equals("")
         ) {
             key = privateRoutingKeyBase + '.' + shop;
+            priority += 50;
         }
-//        System.out.println("Send msg=" + request + " for exchange " + exchange + " whit key " + key);
-        rabbitTemplateCustom.convertAndSend(exchange, key, request);
 
-//        rabbitTemplateCustom.convertAndSend(exchange, routingKey, request);
+
+        int finalPriority = priority;
+//        System.out.println("Send msg=" + request + " for exchange " + exchange + " whit key " + key
+//                + " finalPriority " + finalPriority);
+
+//        rabbitTemplateCustom.convertAndSend(exchange, key, request,
+//                message -> {
+//                    message.getMessageProperties().setPriority(finalPriority);
+//                    return message;
+//                });
+        rabbitTemplateCustom.convertAndSend(exchange, key, request,
+                message -> {
+                    message.getMessageProperties().setPriority(finalPriority);
+                    return message;
+                });
+//        rabbitTemplateCustom.convertAndSend(exchange, key, request);
     }
 
     public SimpleMessageListenerContainer addListener(String queueName, String exchangeName, String key, MessageListener messageListener) {

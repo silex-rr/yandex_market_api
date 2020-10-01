@@ -41,7 +41,7 @@ public class ShopMQListener {
     private AbstractMessageListenerContainer containerCommon;
     private String exchange;
     private static String commonKey;
-    private static final Logger logger = LoggerFactory.getLogger(SecurityServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(ShopMQListener.class);
     private String privetKeyBase;
     private String privetKey;
     private Shop shop;
@@ -65,8 +65,11 @@ public class ShopMQListener {
 //                new ClassPathXmlApplicationContext("./../../scopes.xml");
 
         if (queue == null) {
-            queue = rabbitAdmin.declareQueue();
+
+            queue = rabbitMQConfig.queue();
+//            rabbitAdmin.declareQueue(queue);
         }
+//        queue = rabbitAdmin.declareQueue();
 
         DirectExchange exchange = new DirectExchange(this.exchange);
         rabbitAdmin.declareExchange(exchange);
@@ -79,7 +82,7 @@ public class ShopMQListener {
                 exchange,
                 keys,
                 message -> {
-                    LocalDateTime lastRequestTime = shopStatisticsService.getLastRequestTime(shop);
+//                    LocalDateTime lastRequestTime = shopStatisticsService.getLastRequestTime(shop);
 
 //                    if (lastRequestTime != null) {
 //                        System.out.println("Last Request was at "
@@ -153,8 +156,7 @@ public class ShopMQListener {
                                 request.getUserId()
                         );
                         responseService.save(response);
-                        System.out.println("Response: " + response.getResponse());
-
+//                        System.out.println("Response: " + response.getResponse());
 //                        ResponseServiceImpl responseService = new ResponseServiceImpl();
 //                        responseService.save(response1);
 //                        System.out.println(new String(message.getBody()));
